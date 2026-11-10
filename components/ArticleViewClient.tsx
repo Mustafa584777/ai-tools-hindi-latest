@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Clock, Calendar, Share2, Folder, User, Sparkles, Loader2, X } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, Folder, User, Sparkles, Loader2, X, RotateCcw } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { BlogPost } from '@/lib/types';
@@ -203,8 +203,21 @@ export default function ArticleViewClient({
     }
   };
 
-  const handleSummarize = async () => {
+  const handleSummarize = async (forceRefresh = false) => {
     if (!post) return;
+    const cacheKey = `ai_sum_${post.slug || post.id}`;
+
+    // Instant local cache hit
+    if (!forceRefresh && typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+          setAiSummaryHtml(cached);
+          return;
+        }
+      } catch {}
+    }
+
     setIsSummarizing(true);
     try {
       const res = await fetch('/api/ai-supervisor/', {
@@ -213,7 +226,8 @@ export default function ArticleViewClient({
         body: JSON.stringify({
           action: 'summarize',
           keywordOrTitle: post.title,
-          content: post.content
+          content: post.content,
+          forceRefresh,
         })
       });
 
@@ -231,6 +245,11 @@ export default function ArticleViewClient({
 
       if (data.summary) {
         setAiSummaryHtml(data.summary);
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(cacheKey, data.summary);
+          } catch {}
+        }
       } else {
         setAiSummaryHtml('<p class="text-slate-700">सारांश उत्पन्न करने में समस्या आई। कृपया पुनः प्रयास करें।</p>');
       }
@@ -327,7 +346,7 @@ export default function ArticleViewClient({
 
                   <div className="flex items-center gap-2 flex-wrap shrink-0">
                     <button
-                      onClick={handleSummarize}
+                      onClick={() => handleSummarize(false)}
                       disabled={isSummarizing}
                       className="inline-flex items-center gap-1 px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-bold transition-all text-xs disabled:opacity-50 shadow-md cursor-pointer"
                     >
@@ -358,13 +377,24 @@ export default function ArticleViewClient({
                           <p className="text-xs text-slate-600 font-medium">Detailed summary with lists & tables in easy Hindi</p>
                         </div>
                       </div>
-                      <button
-                        onClick={() => setAiSummaryHtml(null)}
-                        className="p-1.5 hover:bg-white/80 rounded-xl text-slate-500 transition-colors cursor-pointer"
-                        title="Close Summary"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleSummarize(true)}
+                          disabled={isSummarizing}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-100/80 hover:bg-blue-200/80 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                          title="नया सारांश बनाएं"
+                        >
+                          <RotateCcw className={`w-3.5 h-3.5 ${isSummarizing ? 'animate-spin' : ''}`} />
+                          <span className="hidden sm:inline">फिर से बनाएं</span>
+                        </button>
+                        <button
+                          onClick={() => setAiSummaryHtml(null)}
+                          className="p-1.5 hover:bg-white/80 rounded-xl text-slate-500 transition-colors cursor-pointer"
+                          title="Close Summary"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
                     <div className="prose prose-slate max-w-none text-black leading-relaxed font-medium text-base space-y-4">
                       <div dangerouslySetInnerHTML={{ __html: aiSummaryHtml }} />
