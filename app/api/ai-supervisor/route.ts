@@ -1,42 +1,45 @@
-import { GoogleGenAI } from '@google/genai';
-import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenAI } from "@google/genai";
+import { NextRequest, NextResponse } from "next/server";
 
-const apiKey = process.env.GEMINI_API_KEY;
-const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function POST(req: NextRequest) {
   try {
     const { action, keywordOrTitle, content, question } = await req.json();
 
-    if (!ai) {
-      return NextResponse.json({ error: 'Gemini API key is not configured.' }, { status: 500 });
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json(
+        { error: "GEMINI_API_KEY environment variable is not configured on the server." },
+        { status: 500 }
+      );
     }
 
-    if (action === 'summarize') {
-      const prompt = `आप एक विशेषज्ञ AI लेखक और ट्यूटोरियल गाइड हैं। निम्नलिखित हिंदी लेख (${keywordOrTitle}) का एक स्पष्ट, विस्तृत और आकर्षक सारांश (summary) HTML फॉर्मेट में (जैसे <h3>, <p>, <ul>, <li>, <strong>) हिंदी में लिखें जो पढ़ने में बेहद आसान और उपयोगी हो:\n\n${content}`;
-      
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-      });
-
-      return NextResponse.json({ summary: response.text });
+    let prompt = "";
+    if (action === "summarize") {
+      prompt = `आप एक विशेषज्ञ हिंदी AI ब्लॉगर हैं। निम्नलिखित लेख ("${keywordOrTitle}") का एक विस्तृत, आकर्षक और सुंदर हिंदी सारांश (HTML format में <p>, <ul>, <li>, <strong> टैग्स के साथ) तैयार करें। इसमें मुख्य बिंदु, फायदे/नुकसान (यदि लागू हो) और आसान हिंदी में स्पष्टीकरण शामिल करें:\n\n${content}`;
+    } else if (action === "question") {
+      prompt = `आप एक विशेषज्ञ हिंदी AI सहायक हैं। लेख ("${keywordOrTitle}") के संदर्भ में उपयोगकर्ता के निम्नलिखित प्रश्न का सटीक, मददगार और स्पष्ट उत्तर हिंदी में (<p> टैग के साथ HTML format में) दें:\n\nप्रश्न: ${question}\n\nलेख सामग्री:\n${content}`;
+    } else {
+      return NextResponse.json({ error: "Invalid action specified" }, { status: 400 });
     }
 
-    if (action === 'question') {
-      const prompt = `आप aitoolhindi.online के AI सहायक हैं। उपयोगकर्ता का प्रश्न इस लेख "${keywordOrTitle}" के संदर्भ में है।\n\nलेख का संदर्भ:\n${content.slice(0, 4000)}\n\nउपयोगकर्ता का प्रश्न: "${question}"\n\nकृपया इस प्रश्न का सटीक, स्पष्ट और मददगार उत्तर शुद्ध हिंदी में HTML फॉर्मेट (<p>, <ul>, <li>, <strong>) में दें।`;
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-      });
+    const text = response.text || "";
 
-      return NextResponse.json({ answer: response.text });
+    if (action === "summarize") {
+      return NextResponse.json({ summary: text });
+    } else {
+      return NextResponse.json({ answer: text });
     }
-
-    return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error: any) {
-    console.error('AI Supervisor API Error:', error);
-    return NextResponse.json({ error: error.message || 'AI request failed' }, { status: 500 });
+    console.error("AI Supervisor error:", error);
+    return NextResponse.json(
+      { error: error?.message || "AI generation failed" },
+      { status: 500 }
+    );
   }
 }
