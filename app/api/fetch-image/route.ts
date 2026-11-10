@@ -1,30 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const url = req.nextUrl.searchParams.get('url');
-  if (!url) {
-    return NextResponse.json({ error: 'Missing url parameter' }, { status: 400 });
-  }
-
   try {
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-      }
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.statusText}`);
-    }
-    const buffer = await response.arrayBuffer();
-    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    const { searchParams } = new URL(req.url);
+    const imageUrl = searchParams.get('url');
 
-    return new NextResponse(buffer, {
+    if (!imageUrl) {
+      return NextResponse.json({ error: 'Missing image URL' }, { status: 400 });
+    }
+
+    const parsedUrl = new URL(imageUrl);
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      return NextResponse.json({ error: 'Invalid URL protocol' }, { status: 400 });
+    }
+
+    const response = await fetch(imageUrl, {
       headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=86400'
-      }
+        'User-Agent': 'Mozilla/5.0 (compatible; AitoolhindiBot/1.0)',
+      },
     });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+
+    if (!response.ok) {
+      return NextResponse.json({ error: 'Failed to fetch external image' }, { status: response.status });
+    }
+
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    const buffer = await response.arrayBuffer();
+    const base64 = Buffer.from(buffer).toString('base64');
+    const dataUrl = `data:${contentType};base64,${base64}`;
+
+    return NextResponse.json({ dataUrl });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || 'Error processing image' }, { status: 500 });
   }
 }
