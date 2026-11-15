@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   },
   // Allow access to remote image patterns.
   images: {
+    minimumCacheTTL: 604800, // 7 days image cache
     remotePatterns: [
       {
         protocol: 'https',
@@ -67,6 +68,43 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  experimental: {
+    staleTimes: {
+      dynamic: 604800, // 7 days client router cache for visited pages
+      static: 604800,
+    },
+  },
+  async headers() {
+    return [
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+        ],
+      },
+      {
+        source: '/wp-content/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=604800, stale-while-revalidate=604800',
+          },
+        ],
+      },
+      {
+        source: '/((?!api|sw\\.js|_next/webpack-hmr|__nextjs).*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=604800, s-maxage=604800, stale-while-revalidate=604800',
+          },
+        ],
+      },
+    ];
   },
   output: 'standalone',
   transpilePackages: ['motion'],

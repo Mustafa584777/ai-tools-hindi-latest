@@ -1,5 +1,6 @@
 import type {Metadata, Viewport} from 'next';
 import Script from 'next/script';
+import CacheRegistrar from '@/components/CacheRegistrar';
 import './globals.css'; // Global styles
 
 export const metadata: Metadata = {
@@ -43,6 +44,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         </Script>
       </head>
       <body suppressHydrationWarning className="font-['Plus_Jakarta_Sans',sans-serif] bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col">
+        <CacheRegistrar />
         {children}
       </body>
     </html>

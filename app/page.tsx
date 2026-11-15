@@ -4,7 +4,7 @@ import { BlogPost } from '@/lib/types';
 import { cleanPostForExport } from '@/lib/storage';
 import HomeViewClient from '@/components/HomeViewClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 604800; // 7 days ISR cache
 
 async function getPostsServer(): Promise<BlogPost[]> {
   try {

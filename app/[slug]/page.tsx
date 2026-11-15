@@ -6,7 +6,8 @@ import { BlogPost } from '@/lib/types';
 import { cleanPostForExport } from '@/lib/storage';
 import ArticleViewClient from '@/components/ArticleViewClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 604800; // 7 days ISR cache
+export const dynamicParams = true;
 
 async function getPostsServer(): Promise<BlogPost[]> {
   try {
@@ -101,6 +102,31 @@ const STATIC_PAGES: Record<string, { title: string; excerpt: string; content: st
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const posts = await getPostsServer();
+  const published = posts.filter((p) => p.status !== 'draft');
+  const slugs = new Set<string>();
+
+  for (const post of published) {
+    if (post.slug) {
+      slugs.add(post.slug.replace(/\/+$/, '').trim().toLowerCase());
+    }
+    if (post.category) {
+      const catSlug = post.category
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+      if (catSlug) slugs.add(catSlug);
+    }
+  }
+
+  for (const staticSlug of Object.keys(STATIC_PAGES)) {
+    slugs.add(staticSlug);
+  }
+
+  return Array.from(slugs).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

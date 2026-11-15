@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // Server-side in-memory summary & Q&A cache for instant responses (0ms)
 const summaryCache = new Map<string, { html: string; timestamp: number }>();
 const questionCache = new Map<string, { html: string; timestamp: number }>();
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 // Ultra-fast model cascade with automatic fail-over
 const FAST_FALLBACK_MODELS = [
@@ -22,12 +22,13 @@ function cleanMarkdownHtml(raw: string): string {
     cleaned = cleaned.replace(/^```\s*/, '').replace(/```$/i, '').trim();
   }
 
-  // Remove any inline styles, classes, or outer wrapper divs that clash with our clean Orange & White UI theme
+  // Remove any inline styles, classes, wrapper divs, or top h2 title banners that clash with our clean Orange & White UI theme
   cleaned = cleaned
     .replace(/\sstyle="[^"]*"/gi, '')
     .replace(/\sstyle='[^']*'/gi, '')
     .replace(/^<div[^>]*>/i, '')
     .replace(/<\/div>$/i, '')
+    .replace(/^\s*<h[12][^>]*>[\s\S]*?<\/h[12]>\s*/i, '')
     .trim();
 
   return cleaned;
@@ -131,7 +132,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Action: Summarize
     if (action === 'summarize') {
-      const cacheKey = `v2:${(keywordOrTitle || 'tutorial').trim().toLowerCase()}`;
+      const cacheKey = `v3:${(keywordOrTitle || 'tutorial').trim().toLowerCase()}`;
 
       // Check server cache first unless forceRefresh is requested
       if (!forceRefresh) {
@@ -156,17 +157,17 @@ ${conciseContent}
 
 Language & Tone Rules (VERY IMPORTANT):
 - बिल्कुल दोस्त की तरह आम बोलचाल की आसान Hinglish में लिखो (जैसे article लिखा है: देवनागरी हिंदी + आसान English words जैसे prompt, tools, free, steps, beginners, try karo, milta hai, bana sakte ho).
-- Robotic या किताबी शुद्ध हिंदी बिल्कुल मत लिखो। इन शब्दों से बचो: "प्रमुख", "संपूर्ण", "निष्कर्ष", "तय करें", "प्राप्त करें", "चयन करें", "आवश्यकता", "अत्यंत", "प्रदान", "चरण", "यदि", "तथा", "द्वारा"। इनकी जगह "देखो", "चुनो", "मिलेगा", "यूज करो", "अगर", "और", "से", "जरूरी", "बढ़िया" जैसे natural शब्द लिखो।
+- Robotic या किताबी शुद्ध हिंदी बिल्कुल मत लिखो। इन शब्दों से बचो: "मुख्य मुख्य बातें", "संपूर्ण गाइड", "प्रमुख", "संपूर्ण", "निष्कर्ष", "तय करें", "प्राप्त करें", "चयन करें", "आवश्यकता", "अत्यंत", "प्रदान", "चरण", "यदि", "तथा", "द्वारा"। इनकी जगह "देखो", "चुनो", "मिलेगा", "यूज करो", "अगर", "और", "से", "जरूरी", "बढ़िया" जैसे natural शब्द लिखो।
 - Readers से friendly tone में बात करो (जैसे "आप आसानी से बना सकते हो", "बस ये steps follow करो")।
 
 Formatting Rules (STRICT):
 - सिर्फ clean semantic HTML tags दो: <h3>, <ul>, <ol>, <li>, <p>, <strong>, <table>, <thead>, <tbody>, <tr>, <th>, <td>, <blockquote>.
 - कोई भी inline style="..." या class="..." या wrapper <div> या <h2> title banner मत लगाओ, और \`\`\`html मत लिखो।
 - ये 4 sections रखो:
-  1. <h3>📌 मुख्य बातें (Key Points)</h3> — 3-4 छोटे bullet points में पूरा निचोड़।
-  2. <h3>🛠️ काम के Tools और Features</h3> — अगर article में tools हैं तो छोटा और साफ <table> बनाओ (Columns: Tool, Khaas Baat, Price), वरना आसान bullet points दो।
-  3. <h3>📝 आसान Step-by-Step तरीका</h3> — छोटे numbered steps (<ol>) में समझाओ कि कैसे करना है।
-  4. <h3>💡 Pro Tips</h3> — <blockquote> में 2-3 काम की smart tricks बताओ जो सच में काम आएं।`;
+  1. <h3>📌 Quick Highlights</h3> — 3-4 छोटे bullet points में पूरा निचोड़।
+  2. <h3>🛠️ Best Tools & Features</h3> — अगर article में tools हैं तो छोटा और साफ <table> बनाओ (Columns: Tool, Khaas Baat, Price), वरना आसान bullet points दो।
+  3. <h3>📝 Easy Step-by-Step Guide</h3> — छोटे numbered steps (<ol>) में समझाओ कि कैसे करना है।
+  4. <h3>💡 Smart Pro Tips</h3> — <blockquote> में 2-3 काम की smart tricks बताओ जो सच में काम आएं।`;
 
       const systemInstruction =
         'आप Anwar (Aitoolhindi.online के founder) के style में लिखने वाले friendly Hinglish AI buddy हैं। आपकी भाषा बिल्कुल natural, conversational और beginners के लिए super easy होनी चाहिए — कोई robotic या formal हिंदी नहीं। Output सिर्फ clean HTML हो बिना किसी inline CSS या wrapper div के।';

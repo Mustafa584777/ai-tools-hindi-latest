@@ -129,7 +129,7 @@ export default function HomeViewClient({ initialPosts }: HomeViewClientProps) {
                     </div>
 
                     <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-orange-600">
-                      <span>ट्यूटोरियल पढ़ें (Read Tutorial)</span>
+                      <span>Read Tutorial</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>

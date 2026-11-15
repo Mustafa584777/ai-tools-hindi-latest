@@ -59,7 +59,7 @@ export default function ArticleViewClient({
     let isMounted = true;
     async function loadData() {
       try {
-        const res = await fetch(`/api/articles?t=${Date.now()}&fresh=1`, { cache: 'no-store' });
+        const res = await fetch('/api/articles');
         const data = await res.json();
         if (data?.posts && Array.isArray(data.posts) && data.posts.length > 0 && isMounted) {
           const allPosts: BlogPost[] = data.posts;
@@ -205,7 +205,7 @@ export default function ArticleViewClient({
 
   const handleSummarize = async (forceRefresh = false) => {
     if (!post) return;
-    const cacheKey = `ai_sum_v2_${post.slug || post.id}`;
+    const cacheKey = `ai_sum_v3_${post.slug || post.id}`;
 
     // Instant local cache hit
     if (!forceRefresh && typeof window !== 'undefined') {
@@ -375,7 +375,7 @@ export default function ArticleViewClient({
                         </div>
                         <div className="min-w-0">
                           <h3 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight truncate">
-                            AI Summary (आसान भाषा में)
+                            AI Summary
                           </h3>
                           <p className="text-xs text-slate-600 font-medium">
                             Quick key points, tools table &amp; easy steps in simple Hinglish
@@ -416,7 +416,7 @@ export default function ArticleViewClient({
                     <div className="p-1.5 rounded-xl bg-orange-600 text-white">
                       <User className="w-4 h-4" />
                     </div>
-                    <span>और क्या जानना चाहते हैं? (Ask AI Follow-up)</span>
+                    <span>और क्या जानना चाहते हैं?</span>
                   </div>
 
                   <form onSubmit={handleAskQuestion} className="flex flex-col sm:flex-row gap-3">

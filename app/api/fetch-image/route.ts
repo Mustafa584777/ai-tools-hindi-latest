@@ -29,7 +29,14 @@ export async function GET(req: NextRequest) {
     const base64 = Buffer.from(buffer).toString('base64');
     const dataUrl = `data:${contentType};base64,${base64}`;
 
-    return NextResponse.json({ dataUrl });
+    return NextResponse.json(
+      { dataUrl },
+      {
+        headers: {
+          'Cache-Control': 'public, max-age=604800, s-maxage=604800, stale-while-revalidate=604800',
+        },
+      }
+    );
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || 'Error processing image' }, { status: 500 });
   }

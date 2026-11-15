@@ -35,9 +35,9 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
           onClick={() => setIsOpen(!isOpen)}
           className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-700 hover:text-orange-900 bg-orange-100/90 hover:bg-orange-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
           aria-expanded={isOpen}
-          aria-label={isOpen ? "विषय सूची छुपाएं" : "विषय सूची दिखाएं"}
+          aria-label={isOpen ? "Hide Table of Contents" : "Show Table of Contents"}
         >
-          <span>{isOpen ? 'छुपाएं (Hide)' : 'दिखाएं (Show)'}</span>
+          <span>{isOpen ? 'Hide' : 'Show'}</span>
           {isOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
       </div>
