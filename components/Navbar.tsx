@@ -1,25 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Home, Folder } from 'lucide-react';
-import { getStoredBlogPostsSync } from '@/lib/storage';
 
-export default function Navbar() {
+const BASE_CATEGORIES = ['AI Guides', 'Image Tutorials', 'Video Tutorials', 'ChatGPT Guides'];
+
+interface NavbarProps {
+  categories?: string[];
+}
+
+export default function Navbar({ categories: initialCategories }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [categories] = useState<string[]>(() => {
-    try {
-      const posts = getStoredBlogPostsSync();
-      const derived = Array.from(new Set(posts.map(p => p.category).filter(Boolean))) as string[];
-      const deletedRaw = typeof window !== 'undefined' ? localStorage.getItem('aitoolhindi_deleted_categories_v1') : null;
-      const deletedList: string[] = deletedRaw ? JSON.parse(deletedRaw) : [];
-      const base = ['AI Guides', 'Image Tutorials', 'Video Tutorials', 'ChatGPT Guides'];
-      return Array.from(new Set([...base, ...derived])).filter(c => !deletedList.includes(c));
-    } catch {
-      return ['AI Guides', 'Image Tutorials', 'Video Tutorials', 'ChatGPT Guides'];
-    }
-  });
+  const categories = useMemo(
+    () =>
+      initialCategories && initialCategories.length > 0
+        ? Array.from(new Set([...BASE_CATEGORIES, ...initialCategories]))
+        : BASE_CATEGORIES,
+    [initialCategories]
+  );
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
@@ -31,6 +31,8 @@ export default function Navbar() {
               src="/logo.png"
               alt="Aitoolhindi Logo"
               fill
+              sizes="36px"
+              loading="eager"
               className="object-cover"
               referrerPolicy="no-referrer"
             />

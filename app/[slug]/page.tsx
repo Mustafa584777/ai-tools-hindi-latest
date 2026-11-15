@@ -1,27 +1,12 @@
-import fs from 'fs';
-import path from 'path';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BlogPost } from '@/lib/types';
-import { cleanPostForExport } from '@/lib/storage';
+import { getPublishedPostsServer } from '@/lib/serverPosts';
+import { toPostSummary } from '@/lib/postClean';
 import ArticleViewClient from '@/components/ArticleViewClient';
 
 export const revalidate = 604800; // 7 days ISR cache
 export const dynamicParams = true;
-
-async function getPostsServer(): Promise<BlogPost[]> {
-  try {
-    const dataFilePath = path.join(process.cwd(), 'data', 'posts.json');
-    if (fs.existsSync(dataFilePath)) {
-      const content = fs.readFileSync(dataFilePath, 'utf-8');
-      const parsed = JSON.parse(content);
-      if (Array.isArray(parsed)) {
-        return parsed.map((p) => cleanPostForExport(p as BlogPost));
-      }
-    }
-  } catch {}
-  return [];
-}
 
 const STATIC_PAGES: Record<string, { title: string; excerpt: string; content: string }> = {
   'about-us': {
@@ -105,8 +90,7 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const posts = await getPostsServer();
-  const published = posts.filter((p) => p.status !== 'draft');
+  const published = getPublishedPostsServer();
   const slugs = new Set<string>();
 
   for (const post of published) {
@@ -132,7 +116,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const cleanSlug = decodeURIComponent(slug).toLowerCase().replace(/\/+$/, '').trim();
-  const posts = await getPostsServer();
+  const posts = getPublishedPostsServer();
 
   const post = posts.find((p) => {
     const pSlug = (p.slug || '').replace(/\/+$/, '').trim().toLowerCase();
@@ -164,7 +148,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  // Check if static legal/about page
   if (STATIC_PAGES[cleanSlug]) {
     const staticPage = STATIC_PAGES[cleanSlug];
     return {
@@ -173,7 +156,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  // Check if category
   const foundCat = posts.find(
     (p) =>
       p.category &&
@@ -195,10 +177,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
   const cleanSlug = decodeURIComponent(slug).toLowerCase().replace(/\/+$/, '').trim();
-  const posts = await getPostsServer();
-  const publishedPosts = posts.filter((p) => p.status !== 'draft');
+  const publishedPosts = getPublishedPostsServer();
+  const categories = Array.from(
+    new Set(publishedPosts.map((p) => p.category).filter(Boolean))
+  ) as string[];
 
-  let post =
+  let post: BlogPost | null =
     publishedPosts.find((p) => {
       const pSlug = (p.slug || '').replace(/\/+$/, '').trim().toLowerCase();
       const pId = (p.id || '').replace(/^blog-/, '').trim().toLowerCase();
@@ -210,14 +194,13 @@ export default async function ArticlePage({ params }: PageProps) {
       );
     }) || null;
 
-  let foundCat =
+  const foundCat =
     publishedPosts.find(
       (p) =>
         p.category &&
         p.category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') === cleanSlug
     )?.category || null;
 
-  // If static page like about-us, privacy-policy, etc.
   if (!post && !foundCat && STATIC_PAGES[cleanSlug]) {
     const pageData = STATIC_PAGES[cleanSlug];
     post = {
@@ -228,7 +211,7 @@ export default async function ArticlePage({ params }: PageProps) {
       content: pageData.content,
       category: 'Information',
       author: 'Aitoolhindi Team',
-      date: new Date().toLocaleDateString('hi-IN'),
+      date: new Date(1740000000000).toLocaleDateString('hi-IN'),
       readTime: '3 min read',
       image: 'https://picsum.photos/seed/aitoolhindi/800/450',
       imageAlt: pageData.title,
@@ -241,11 +224,26 @@ export default async function ArticlePage({ params }: PageProps) {
     notFound();
   }
 
+  // Only pass slim summaries for the sidebar (6 related posts) or matched category archive
+  const lightInitialPosts = foundCat
+    ? publishedPosts
+        .filter(
+          (p) =>
+            p.category &&
+            p.category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') === cleanSlug
+        )
+        .map(toPostSummary)
+    : publishedPosts
+        .filter((p) => p.id !== post?.id)
+        .slice(0, 6)
+        .map(toPostSummary);
+
   return (
     <ArticleViewClient
       initialPost={post}
       initialMatchedCategory={foundCat}
-      initialPosts={publishedPosts}
+      initialPosts={lightInitialPosts}
+      categories={categories}
       cleanSlug={cleanSlug}
     />
   );

@@ -11,9 +11,10 @@ import BlogImage from '@/components/BlogImage';
 
 interface HomeViewClientProps {
   initialPosts: BlogPost[];
+  categories?: string[];
 }
 
-export default function HomeViewClient({ initialPosts }: HomeViewClientProps) {
+export default function HomeViewClient({ initialPosts, categories }: HomeViewClientProps) {
   const [posts] = useState<BlogPost[]>(initialPosts);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -24,7 +25,7 @@ export default function HomeViewClient({ initialPosts }: HomeViewClientProps) {
 
   return (
     <>
-      <Navbar />
+      <Navbar categories={categories} />
 
       <main className="flex-1">
         {/* Hero Section focused on Hindi AI Tutorials */}

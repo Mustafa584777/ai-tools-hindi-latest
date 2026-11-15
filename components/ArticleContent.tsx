@@ -13,10 +13,35 @@ function getProcessedContent(html: string): string {
   // 2. Sanitize external links missing protocol
   cleaned = sanitizeExternalLinks(cleaned);
 
-  // 3. Ensure all aitoolhindi.online wp-content images and videos resolve to local static path
-  cleaned = cleaned.replace(/https?:\/\/(?:www\.)?aitoolhindi\.online(\/wp-content\/[^\s"'>]+)/gi, '$1');
+  // 3. Optimize every <img> tag:
+  //    - 1st image (LCP): eager + fetchpriority="high" + skeleton shimmer until decoded
+  //    - Subsequent images: loading="lazy" + decoding="async" + fetchpriority="low" + skeleton shimmer
+  let imgIndex = 0;
+  cleaned = cleaned.replace(/<img\b([^>]*)>/gi, (_match, rawAttrs: string) => {
+    const isLcp = imgIndex === 0;
+    imgIndex++;
 
-  // 4. Inject matching heading IDs with scroll offset for smooth Table of Contents navigation
+    let attrs = rawAttrs
+      .replace(/\s+(?:loading|fetchpriority|decoding|referrerpolicy)=["'][^"']*["']/gi, '')
+      .trim();
+
+    if (/class=["']([^"']*)["']/i.test(attrs)) {
+      attrs = attrs.replace(/class=["']([^"']*)["']/i, 'class="$1 img-skeleton-loading"');
+    } else {
+      attrs = `${attrs} class="img-skeleton-loading"`.trim();
+    }
+
+    const perfAttrs = isLcp
+      ? 'fetchpriority="high" loading="eager" decoding="async" referrerpolicy="no-referrer"'
+      : 'loading="lazy" decoding="async" fetchpriority="low" referrerpolicy="no-referrer"';
+
+    return `<img ${attrs} ${perfAttrs}>`;
+  });
+
+  // 4. Lazy-load embedded iframes
+  cleaned = cleaned.replace(/<iframe\b(?![^>]*\bloading=)([^>]*)>/gi, '<iframe loading="lazy"$1>');
+
+  // 5. Inject matching heading IDs with scroll offset for smooth Table of Contents navigation
   cleaned = injectHeadingIdsForToc(cleaned);
 
   return cleaned;
@@ -129,11 +154,30 @@ export default function ArticleContent({ content }: { content: string }) {
     });
 
     const allImages = container.querySelectorAll('img');
-    allImages.forEach((imgEl) => {
+    allImages.forEach((imgEl, idx) => {
       imgEl.setAttribute('referrerpolicy', 'no-referrer');
+      if (idx === 0) {
+        imgEl.setAttribute('fetchpriority', 'high');
+        imgEl.setAttribute('loading', 'eager');
+      } else {
+        imgEl.setAttribute('loading', 'lazy');
+        imgEl.setAttribute('decoding', 'async');
+      }
       imgEl.classList.add('max-w-full', 'w-full', 'h-auto', 'object-cover', 'rounded-xl', 'my-4', 'mx-auto');
       imgEl.style.maxWidth = '100%';
       imgEl.style.height = 'auto';
+
+      const markLoaded = () => {
+        imgEl.classList.remove('img-skeleton-loading');
+        imgEl.classList.add('img-skeleton-loaded');
+      };
+
+      if (imgEl.complete && imgEl.naturalWidth > 0) {
+        markLoaded();
+      } else {
+        imgEl.classList.add('img-skeleton-loading');
+        imgEl.addEventListener('load', markLoaded, { once: true });
+      }
 
       let attempts = 0;
       imgEl.onerror = () => {
@@ -176,6 +220,8 @@ export default function ArticleContent({ content }: { content: string }) {
         if (!imgEl.src.includes('picsum.photos')) {
           imgEl.src = `https://picsum.photos/seed/${encodeURIComponent(imgEl.alt || 'aitoolhindi')}/800/450`;
           imgEl.classList.add('opacity-90');
+        } else {
+          markLoaded();
         }
       };
     });

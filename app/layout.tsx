@@ -1,7 +1,14 @@
-import type {Metadata, Viewport} from 'next';
+import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import CacheRegistrar from '@/components/CacheRegistrar';
 import './globals.css'; // Global styles
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Aitoolhindi.online – भारत का नंबर 1 हिंदी AI ट्यूटोरियल और टूल्स गाइड',
@@ -20,21 +27,21 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   width: 'device-width',
-  initialScale: 0.7,
-  maximumScale: 2.0,
+  initialScale: 1,
+  maximumScale: 5,
   userScalable: true,
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="hi">
       <head>
-        {/* Google tag (gtag.js) */}
+        {/* Google tag (gtag.js) deferred until after load */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-RRHCK8H04T"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -43,7 +50,10 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           `}
         </Script>
       </head>
-      <body suppressHydrationWarning className="font-['Plus_Jakarta_Sans',sans-serif] bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col">
+      <body
+        suppressHydrationWarning
+        className={`${plusJakarta.className} bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col`}
+      >
         <CacheRegistrar />
         {children}
       </body>

@@ -33,16 +33,9 @@ export function resolveDisplayImageUrl(url: string | undefined | null): string {
     return cleanUrl;
   }
 
-  // WordPress upload URL on aitoolhindi.online (HTTP or HTTPS, with or without www)
-  // Map directly to local static path so it serves with zero CORS / mixed-content issues
-  const wpMatch = cleanUrl.match(/^https?:\/\/(?:www\.)?aitoolhindi\.online(\/wp-content\/.+)$/i);
-  if (wpMatch && wpMatch[1]) {
-    return wpMatch[1];
-  }
-
-  // If another URL has http://aitoolhindi.online, upgrade to https
-  if (cleanUrl.startsWith('http://aitoolhindi.online/')) {
-    return cleanUrl.replace('http://aitoolhindi.online/', 'https://aitoolhindi.online/');
+  // Upgrade http://aitoolhindi.online to https:// (serverPosts already maps existing local wp-content files to /wp-content/...)
+  if (cleanUrl.startsWith('http://')) {
+    return cleanUrl.replace(/^http:\/\//i, 'https://');
   }
 
   return cleanUrl;

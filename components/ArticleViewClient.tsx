@@ -16,6 +16,7 @@ interface ArticleViewClientProps {
   initialPost: BlogPost | null;
   initialMatchedCategory: string | null;
   initialPosts: BlogPost[];
+  categories?: string[];
   cleanSlug: string;
 }
 
@@ -30,6 +31,7 @@ export default function ArticleViewClient({
   initialPost,
   initialMatchedCategory,
   initialPosts,
+  categories,
   cleanSlug,
 }: ArticleViewClientProps) {
   const [posts, setPosts] = useState<BlogPost[]>(initialPosts);
@@ -95,7 +97,7 @@ export default function ArticleViewClient({
   if (loading) {
     return (
       <>
-        <Navbar />
+        <Navbar categories={categories} />
         <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-24 text-center text-black font-medium">
           Loading tutorial...
         </main>
@@ -111,7 +113,7 @@ export default function ArticleViewClient({
 
     return (
       <>
-        <Navbar />
+        <Navbar categories={categories} />
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-8">
           <div className="space-y-3">
             <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-black hover:text-orange-600 transition-colors">
@@ -182,7 +184,7 @@ export default function ArticleViewClient({
   if (!post) {
     return (
       <>
-        <Navbar />
+        <Navbar categories={categories} />
         <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-24 text-center space-y-4">
           <h1 className="text-2xl font-bold text-black">Page or Category Not Found (404)</h1>
           <p className="text-black font-medium">This exact URL slug does not exist or was deleted.</p>
@@ -304,7 +306,7 @@ export default function ArticleViewClient({
 
   return (
     <>
-      <Navbar />
+      <Navbar categories={categories} />
 
       <main className="flex-1 max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-10 md:py-12 space-y-6 sm:space-y-8 w-full max-w-full overflow-hidden">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-black hover:text-orange-600 transition-colors">
@@ -476,11 +478,14 @@ export default function ArticleViewClient({
                 {/* Author Box */}
                 <div className="mt-8 pt-8 border-t border-slate-100">
                   <div className="p-6 sm:p-8 bg-gradient-to-br from-orange-50/60 to-amber-50/30 rounded-2xl border border-orange-200/60 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 shadow-sm">
-                    <div className="w-16 h-16 rounded-full overflow-hidden bg-orange-100 shrink-0 shadow-md border border-orange-200 relative">
+                    <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-200 shrink-0 shadow-md border border-orange-200 relative">
                       <Image
                         src="/author.png"
                         alt={post.author || 'Anwar'}
                         fill
+                        sizes="64px"
+                        loading="lazy"
+                        decoding="async"
                         className="object-cover"
                         referrerPolicy="no-referrer"
                       />
@@ -523,6 +528,7 @@ export default function ArticleViewClient({
                           src={p.image}
                           alt={p.imageAlt || p.title}
                           fill
+                          sizes="64px"
                           className="object-cover group-hover:scale-105 transition-transform"
                         />
                       </div>

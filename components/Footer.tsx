@@ -12,6 +12,8 @@ export default function Footer() {
                 src="/logo.png"
                 alt="Logo"
                 fill
+                sizes="36px"
+                loading="lazy"
                 className="object-cover"
                 referrerPolicy="no-referrer"
               />

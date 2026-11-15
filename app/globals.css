@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 /* Theme table styles for WordPress imported tables and editor tables */
 table {
@@ -257,4 +256,27 @@ article nav[aria-label="Table of Contents"] a:hover {
   color: #334155;
   font-size: 0.9rem;
 }
+
+@keyframes aitoolSkeletonShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.img-skeleton-loading {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%) !important;
+  background-size: 200% 100% !important;
+  animation: aitoolSkeletonShimmer 1.4s ease-in-out infinite;
+  min-height: 180px;
+}
+
+.img-skeleton-loaded {
+  background: transparent !important;
+  animation: none !important;
+  min-height: 0;
+}
+
 
