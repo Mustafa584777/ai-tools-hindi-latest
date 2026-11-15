@@ -153,3 +153,108 @@ article nav[aria-label="Table of Contents"] a:hover {
 [contenteditable="true"] video {
   cursor: pointer;
 }
+
+/* Clean modern Orange & White styling for AI Summarised Version box */
+.ai-summary-content {
+  color: #1e293b;
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.ai-summary-content h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 4px solid #ea580c;
+}
+
+.ai-summary-content h3:first-child {
+  margin-top: 0;
+}
+
+.ai-summary-content p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #334155;
+}
+
+.ai-summary-content strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.ai-summary-content ul,
+.ai-summary-content ol {
+  margin-top: 0.5rem !important;
+  margin-bottom: 1rem !important;
+  padding-left: 1.4rem !important;
+}
+
+.ai-summary-content li {
+  margin-top: 0.45rem !important;
+  margin-bottom: 0.45rem !important;
+  color: #1e293b !important;
+  line-height: 1.65 !important;
+}
+
+.ai-summary-content ul li::marker {
+  color: #ea580c;
+}
+
+.ai-summary-content ol li::marker {
+  color: #ea580c;
+  font-weight: 700;
+}
+
+.ai-summary-content table {
+  width: 100%;
+  margin-top: 0.75rem;
+  margin-bottom: 1.25rem;
+  border-radius: 0.875rem;
+  border: 1px solid #fed7aa;
+  box-shadow: 0 1px 2px rgba(234, 88, 12, 0.06);
+  background-color: #ffffff;
+}
+
+.ai-summary-content th {
+  background-color: #fff7ed;
+  color: #9a3412;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid #fed7aa;
+  border-right: 1px solid #ffedd5;
+}
+
+.ai-summary-content td {
+  padding: 0.75rem 0.875rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #f8fafc;
+}
+
+.ai-summary-content tr:nth-child(even) {
+  background-color: #fffaf5;
+}
+
+.ai-summary-content tr:hover {
+  background-color: #fff7ed;
+}
+
+.ai-summary-content blockquote {
+  margin: 1rem 0 0 0;
+  padding: 0.875rem 1rem;
+  background-color: #fff7ed;
+  border-left: 4px solid #ea580c;
+  border-radius: 0.75rem;
+  color: #334155;
+  font-size: 0.9rem;
+}
+

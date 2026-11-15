@@ -205,7 +205,7 @@ export default function ArticleViewClient({
 
   const handleSummarize = async (forceRefresh = false) => {
     if (!post) return;
-    const cacheKey = `ai_sum_${post.slug || post.id}`;
+    const cacheKey = `ai_sum_v2_${post.slug || post.id}`;
 
     // Instant local cache hit
     if (!forceRefresh && typeof window !== 'undefined') {
@@ -236,11 +236,11 @@ export default function ArticleViewClient({
       try {
         data = JSON.parse(responseText);
       } catch {
-        throw new Error('सर्वर से अमान्य प्रतिक्रिया मिली (Invalid response format)');
+        throw new Error('Server se sahi response nahi mila');
       }
 
       if (!res.ok || data.error) {
-        throw new Error(data.error || `सर्वर त्रुटि (${res.status})`);
+        throw new Error(data.error || `Server error (${res.status})`);
       }
 
       if (data.summary) {
@@ -251,10 +251,10 @@ export default function ArticleViewClient({
           } catch {}
         }
       } else {
-        setAiSummaryHtml('<p class="text-slate-700">सारांश उत्पन्न करने में समस्या आई। कृपया पुनः प्रयास करें।</p>');
+        setAiSummaryHtml('<p class="text-slate-700">Summary generate karne mein dikkat aayi. Ek baar phir try karein.</p>');
       }
     } catch (e) {
-      setAiSummaryHtml('<p class="text-red-600 font-semibold">त्रुटि: ' + (e as Error).message + '</p>');
+      setAiSummaryHtml('<p class="text-red-600 font-semibold">Error: ' + (e as Error).message + '</p>');
     } finally {
       setIsSummarizing(false);
     }
@@ -348,15 +348,15 @@ export default function ArticleViewClient({
                     <button
                       onClick={() => handleSummarize(false)}
                       disabled={isSummarizing}
-                      className="inline-flex items-center gap-1 px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-bold transition-all text-xs disabled:opacity-50 shadow-md cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl font-bold transition-all text-xs disabled:opacity-50 shadow-sm shadow-orange-500/20 cursor-pointer"
                     >
-                      {isSummarizing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3 text-white" />}
+                      {isSummarizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-amber-100" />}
                       <span>{isSummarizing ? 'Summarising...' : 'Summarise with AI'}</span>
                     </button>
 
                     <button
                       onClick={handleShare}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-black rounded-lg font-bold transition-colors text-xs cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-black rounded-xl font-bold transition-colors text-xs cursor-pointer"
                     >
                       <Share2 className="w-3 h-3" />
                       <span>{copied ? 'Copied!' : 'Share'}</span>
@@ -364,40 +364,48 @@ export default function ArticleViewClient({
                   </div>
                 </div>
 
-                {/* Inline AI Summary Section (Appears right at the top of article content when clicked) */}
+                {/* Inline AI Summary Section (Clean modern Orange & White homepage-inspired design) */}
                 {aiSummaryHtml && (
-                  <div className="p-6 sm:p-8 bg-gradient-to-br from-blue-50/70 via-indigo-50/40 to-purple-50/50 rounded-3xl border border-blue-200/80 shadow-md space-y-4">
-                    <div className="flex items-center justify-between border-b border-blue-200/60 pb-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="p-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-xs">
+                  <div className="bg-white rounded-3xl border border-orange-200 shadow-md overflow-hidden">
+                    <div className="h-1.5 w-full bg-gradient-to-r from-orange-600 via-amber-500 to-orange-600" />
+                    <div className="px-5 sm:px-7 py-4 bg-gradient-to-r from-orange-50/90 via-amber-50/40 to-white border-b border-orange-100 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="p-2.5 rounded-2xl bg-gradient-to-br from-orange-600 to-amber-600 text-white shadow-sm shadow-orange-500/25 shrink-0">
                           <Sparkles className="w-5 h-5" />
                         </div>
-                        <div>
-                          <h3 className="font-extrabold text-black text-lg">AI Summarised Version (एआई सारांश)</h3>
-                          <p className="text-xs text-slate-600 font-medium">Detailed summary with lists & tables in easy Hindi</p>
+                        <div className="min-w-0">
+                          <h3 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight truncate">
+                            AI Summary (आसान भाषा में)
+                          </h3>
+                          <p className="text-xs text-slate-600 font-medium">
+                            Quick key points, tools table &amp; easy steps in simple Hinglish
+                          </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           onClick={() => handleSummarize(true)}
                           disabled={isSummarizing}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-blue-700 bg-blue-100/80 hover:bg-blue-200/80 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
-                          title="नया सारांश बनाएं"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-orange-700 bg-white border border-orange-200 hover:bg-orange-50 rounded-xl transition-colors cursor-pointer disabled:opacity-50 shadow-2xs"
+                          title="नया Summary बनाएं"
                         >
                           <RotateCcw className={`w-3.5 h-3.5 ${isSummarizing ? 'animate-spin' : ''}`} />
-                          <span className="hidden sm:inline">फिर से बनाएं</span>
+                          <span className="hidden sm:inline">Refresh</span>
                         </button>
                         <button
                           onClick={() => setAiSummaryHtml(null)}
-                          className="p-1.5 hover:bg-white/80 rounded-xl text-slate-500 transition-colors cursor-pointer"
+                          className="p-1.5 hover:bg-orange-100/70 rounded-xl text-slate-500 hover:text-orange-700 transition-colors cursor-pointer"
                           title="Close Summary"
                         >
                           <X className="w-5 h-5" />
                         </button>
                       </div>
                     </div>
-                    <div className="prose prose-slate max-w-none text-black leading-relaxed font-medium text-base space-y-4">
-                      <div dangerouslySetInnerHTML={{ __html: aiSummaryHtml }} />
+                    <div className="p-5 sm:p-7 bg-white">
+                      <div
+                        className="ai-summary-content"
+                        dangerouslySetInnerHTML={{ __html: aiSummaryHtml }}
+                      />
                     </div>
                   </div>
                 )}
@@ -422,9 +430,9 @@ export default function ArticleViewClient({
                     <button
                       type="submit"
                       disabled={isAskingQuestion || !userQuestion.trim()}
-                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md inline-flex items-center justify-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
+                      className="px-6 py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-sm shadow-orange-500/20 inline-flex items-center justify-center gap-2 disabled:opacity-50 transition-all cursor-pointer"
                     >
-                      {isAskingQuestion ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                      {isAskingQuestion ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-amber-100" />}
                       <span>Ask AI</span>
                     </button>
                   </form>

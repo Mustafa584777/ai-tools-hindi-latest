@@ -21,6 +21,15 @@ function cleanMarkdownHtml(raw: string): string {
   } else if (cleaned.startsWith('```')) {
     cleaned = cleaned.replace(/^```\s*/, '').replace(/```$/i, '').trim();
   }
+
+  // Remove any inline styles, classes, or outer wrapper divs that clash with our clean Orange & White UI theme
+  cleaned = cleaned
+    .replace(/\sstyle="[^"]*"/gi, '')
+    .replace(/\sstyle='[^']*'/gi, '')
+    .replace(/^<div[^>]*>/i, '')
+    .replace(/<\/div>$/i, '')
+    .trim();
+
   return cleaned;
 }
 
@@ -51,7 +60,7 @@ async function generateWithCascade(
   ai: GoogleGenAI,
   prompt: string,
   systemInstruction: string,
-  perModelTimeoutMs = 6000
+  perModelTimeoutMs = 7000
 ): Promise<{ text: string; modelUsed: string; durationMs: number }> {
   let lastError: any = null;
 
@@ -122,7 +131,7 @@ export async function POST(req: NextRequest) {
 
     // 1. Action: Summarize
     if (action === 'summarize') {
-      const cacheKey = (keywordOrTitle || 'tutorial').trim().toLowerCase();
+      const cacheKey = `v2:${(keywordOrTitle || 'tutorial').trim().toLowerCase()}`;
 
       // Check server cache first unless forceRefresh is requested
       if (!forceRefresh) {
@@ -139,21 +148,28 @@ export async function POST(req: NextRequest) {
 
       const conciseContent = extractConciseContent(content || '', 4000);
 
-      const prompt = `हिंदी AI ट्यूटोरियल का त्वरित व सुंदर सारांश:
-शीर्षक: ${keywordOrTitle || 'AI Tutorial'}
-सामग्री:
+      const prompt = `नीचे दिए गए article का एक super easy, conversational Hinglish summary तैयार करो।
+
+Title: ${keywordOrTitle || 'AI Tutorial'}
+Article Content:
 ${conciseContent}
 
-निर्देश:
-1. सीधे साफ़ HTML कोड आउटपुट दें (बिना \`\`\`html के)।
-2. मुख्य भाग:
-   - <h3>📌 मुख्य मुख्य बातें (Key Takeaways)</h3> (बुलेट पॉइंट्स)
-   - <h3>🛠️ प्रमुख टूल्स और फीचर्स</h3> (टेबल: Tool Name, Features, Pricing)
-   - <h3>📝 स्टेप-बाय-स्टेप सारांश</h3> (आसान स्टेप्स)
-   - <h3>💡 एक्सपर्ट प्रो टिप्स</h3> (उपयोगी टिप्स)`;
+Language & Tone Rules (VERY IMPORTANT):
+- बिल्कुल दोस्त की तरह आम बोलचाल की आसान Hinglish में लिखो (जैसे article लिखा है: देवनागरी हिंदी + आसान English words जैसे prompt, tools, free, steps, beginners, try karo, milta hai, bana sakte ho).
+- Robotic या किताबी शुद्ध हिंदी बिल्कुल मत लिखो। इन शब्दों से बचो: "प्रमुख", "संपूर्ण", "निष्कर्ष", "तय करें", "प्राप्त करें", "चयन करें", "आवश्यकता", "अत्यंत", "प्रदान", "चरण", "यदि", "तथा", "द्वारा"। इनकी जगह "देखो", "चुनो", "मिलेगा", "यूज करो", "अगर", "और", "से", "जरूरी", "बढ़िया" जैसे natural शब्द लिखो।
+- Readers से friendly tone में बात करो (जैसे "आप आसानी से बना सकते हो", "बस ये steps follow करो")।
+
+Formatting Rules (STRICT):
+- सिर्फ clean semantic HTML tags दो: <h3>, <ul>, <ol>, <li>, <p>, <strong>, <table>, <thead>, <tbody>, <tr>, <th>, <td>, <blockquote>.
+- कोई भी inline style="..." या class="..." या wrapper <div> या <h2> title banner मत लगाओ, और \`\`\`html मत लिखो।
+- ये 4 sections रखो:
+  1. <h3>📌 मुख्य बातें (Key Points)</h3> — 3-4 छोटे bullet points में पूरा निचोड़।
+  2. <h3>🛠️ काम के Tools और Features</h3> — अगर article में tools हैं तो छोटा और साफ <table> बनाओ (Columns: Tool, Khaas Baat, Price), वरना आसान bullet points दो।
+  3. <h3>📝 आसान Step-by-Step तरीका</h3> — छोटे numbered steps (<ol>) में समझाओ कि कैसे करना है।
+  4. <h3>💡 Pro Tips</h3> — <blockquote> में 2-3 काम की smart tricks बताओ जो सच में काम आएं।`;
 
       const systemInstruction =
-        'आप Aitoolhindi.online के AI ट्यूटर हैं। तकनीकी AI विषयों का अत्यंत त्वरित, सरल और सुंदर HTML सारांश हिंदी में तैयार करें।';
+        'आप Anwar (Aitoolhindi.online के founder) के style में लिखने वाले friendly Hinglish AI buddy हैं। आपकी भाषा बिल्कुल natural, conversational और beginners के लिए super easy होनी चाहिए — कोई robotic या formal हिंदी नहीं। Output सिर्फ clean HTML हो बिना किसी inline CSS या wrapper div के।';
 
       const result = await generateWithCascade(ai, prompt, systemInstruction, 7000);
       const summaryHtml = cleanMarkdownHtml(result.text);
@@ -174,12 +190,12 @@ ${conciseContent}
       const userQ = (question || '').trim();
       if (!userQ) {
         return NextResponse.json(
-          { error: 'कृपया कोई प्रश्न दर्ज करें।' },
+          { error: 'कृपया कोई सवाल लिखें।' },
           { status: 400 }
         );
       }
 
-      const qCacheKey = `${(keywordOrTitle || '').trim().toLowerCase()}_${userQ.toLowerCase()}`;
+      const qCacheKey = `v2:${(keywordOrTitle || '').trim().toLowerCase()}_${userQ.toLowerCase()}`;
       if (!forceRefresh) {
         const cached = questionCache.get(qCacheKey);
         if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
@@ -194,16 +210,18 @@ ${conciseContent}
 
       const conciseContent = extractConciseContent(content || '', 3500);
 
-      const prompt = `यूज़र का सवाल: "${userQ}"
-आर्टिकल संदर्भ: ${keywordOrTitle || 'AI Guide'}
-सामग्री:
+      const prompt = `User का सवाल: "${userQ}"
+Article Context: ${keywordOrTitle || 'AI Guide'}
+Content:
 ${conciseContent}
 
 निर्देश:
-यूज़र के सवाल का त्वरित, सीधा व सटीक उत्तर हिंदी में दें। आउटपुट केवल साफ़ HTML (<p>, <ul>, <li>, <strong>) में हो।`;
+- बिल्कुल दोस्त जैसी आसान और conversational Hinglish में सीधा जवाब दो (देवनागरी हिंदी + simple English words जैसे prompt, free, tool, app, try karo)।
+- किताबी या robotic हिंदी शब्द (जैसे आवश्यकता, प्राप्त करें, उपलब्ध, चयन करें) मत लिखो।
+- सिर्फ clean HTML (<p>, <ul>, <li>, <strong>) दो, कोई inline style या \`\`\`html मत लगाओ।`;
 
       const systemInstruction =
-        'आप Aitoolhindi.online के AI एक्सपर्ट हैं। उपयोगकर्ताओं के सवालों का त्वरित, सटीक और सरल हिंदी में समाधान दें।';
+        'आप Aitoolhindi.online के friendly AI buddy हैं जो हर सवाल का जवाब आसान बोलचाल की Hinglish में देते हैं।';
 
       const result = await generateWithCascade(ai, prompt, systemInstruction, 7000);
       const answerHtml = cleanMarkdownHtml(result.text);
@@ -226,7 +244,7 @@ ${conciseContent}
     console.error('[AI-Supervisor API Error]:', error);
     const message =
       error?.message ||
-      'AI सेवा से संपर्क करने में समस्या आई। कृपया पुनः प्रयास करें।';
+      'AI से जवाब मिलने में दिक्कत आई। कृपया थोड़ी देर में फिर से try करें।';
     return NextResponse.json(
       {
         error: message,
