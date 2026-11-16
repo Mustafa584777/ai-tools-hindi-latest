@@ -102,6 +102,7 @@ export default function ArticleViewClient({
         <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-24 text-center text-black font-medium">
           Loading tutorial...
         </main>
+        <TopicChatbot topicTitle="AI Tools & Guides" />
         <Footer />
       </>
     );
@@ -197,6 +198,7 @@ export default function ArticleViewClient({
             Back to Home
           </Link>
         </main>
+        <TopicChatbot topicTitle="AI Tools & Guides" />
         <Footer />
       </>
     );

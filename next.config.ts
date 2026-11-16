@@ -96,11 +96,20 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
         source: '/((?!api|sw\\.js|_next/webpack-hmr|__nextjs).*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=604800, s-maxage=604800, stale-while-revalidate=604800',
+            value: 'public, max-age=0, s-maxage=604800, stale-while-revalidate=604800',
           },
         ],
       },

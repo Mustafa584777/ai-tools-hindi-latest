@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import TopicChatbot from '@/components/TopicChatbot';
 
 export default function NotFound() {
   return (
@@ -13,6 +14,7 @@ export default function NotFound() {
           Back to Home
         </Link>
       </main>
+      <TopicChatbot topicTitle="AI Tools & Guides" />
       <Footer />
     </>
   );

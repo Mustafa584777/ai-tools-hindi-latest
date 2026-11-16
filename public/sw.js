@@ -1,5 +1,5 @@
-const CACHE_NAME = 'aitoolhindi-pages-v1';
-const META_CACHE_NAME = 'aitoolhindi-meta-v1';
+const CACHE_NAME = 'aitoolhindi-pages-v2';
+const META_CACHE_NAME = 'aitoolhindi-meta-v2';
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 self.addEventListener('install', (event) => {
@@ -13,13 +13,16 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME && key !== META_CACHE_NAME)
-          .map((key) => caches.delete(key))
-      );
-    }).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== CACHE_NAME && key !== META_CACHE_NAME)
+            .map((key) => caches.delete(key))
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
@@ -41,6 +44,11 @@ function shouldCacheRequest(request) {
   }
 
   return true;
+}
+
+function isNavigationOrHtml(request) {
+  const accept = request.headers.get('accept') || '';
+  return request.mode === 'navigate' || accept.includes('text/html');
 }
 
 async function isCacheFresh(request) {
@@ -76,10 +84,38 @@ self.addEventListener('fetch', (event) => {
       const cache = await caches.open(CACHE_NAME);
       const cachedResponse = await cache.match(request);
 
+      // For HTML pages: return 7-day cached page immediately (0ms) AND refresh in background
+      // so layout/feature updates always sync cleanly across all visited articles.
+      if (isNavigationOrHtml(request)) {
+        if (cachedResponse) {
+          event.waitUntil(
+            fetch(request, { cache: 'no-cache' })
+              .then((networkResponse) => {
+                if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
+                  return storeWithTimestamp(request, networkResponse);
+                }
+              })
+              .catch(() => {})
+          );
+          return cachedResponse;
+        }
+
+        try {
+          const networkResponse = await fetch(request, { cache: 'no-cache' });
+          if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
+            await storeWithTimestamp(request, networkResponse);
+          }
+          return networkResponse;
+        } catch (err) {
+          if (cachedResponse) return cachedResponse;
+          throw err;
+        }
+      }
+
+      // For static assets / JSON / images: 7-day Cache-First
       if (cachedResponse) {
         const fresh = await isCacheFresh(request);
         if (fresh) {
-          // Instant 0ms return from 7-day browser cache without hitting server
           return cachedResponse;
         }
       }
@@ -91,7 +127,6 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       } catch (err) {
-        // Fallback to stale cache if offline
         if (cachedResponse) {
           return cachedResponse;
         }
