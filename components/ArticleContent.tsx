@@ -163,9 +163,10 @@ export default function ArticleContent({ content }: { content: string }) {
         imgEl.setAttribute('loading', 'lazy');
         imgEl.setAttribute('decoding', 'async');
       }
-      imgEl.classList.add('max-w-full', 'w-full', 'h-auto', 'object-cover', 'rounded-xl', 'my-4', 'mx-auto');
+      imgEl.classList.add('max-w-full', 'w-full', 'h-auto', 'object-cover', 'rounded-xl', 'mt-4', 'mb-[10px]', 'mx-auto');
       imgEl.style.maxWidth = '100%';
       imgEl.style.height = 'auto';
+      imgEl.style.marginBottom = '10px';
 
       const markLoaded = () => {
         imgEl.classList.remove('img-skeleton-loading');

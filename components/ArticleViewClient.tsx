@@ -11,6 +11,7 @@ import ArticleContent from '@/components/ArticleContent';
 import TableOfContents from '@/components/TableOfContents';
 import { extractTocFromHtml } from '@/lib/utils';
 import BlogImage from '@/components/BlogImage';
+import TopicChatbot from '@/components/TopicChatbot';
 
 interface ArticleViewClientProps {
   initialPost: BlogPost | null;
@@ -176,6 +177,10 @@ export default function ArticleViewClient({
             )}
           </div>
         </main>
+        <TopicChatbot
+          topicTitle={`${matchedCategory} AI Tutorials`}
+          topicContent={categoryPosts.map((p) => `${p.title}: ${p.metaDescription || p.excerpt}`).join('\n')}
+        />
         <Footer />
       </>
     );
@@ -546,6 +551,7 @@ export default function ArticleViewClient({
         </div>
       </main>
 
+      <TopicChatbot topicTitle={post.title} topicContent={post.content} />
       <Footer />
     </>
   );

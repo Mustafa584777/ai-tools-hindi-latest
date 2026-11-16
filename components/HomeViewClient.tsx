@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { BlogPost } from '@/lib/types';
 import BlogImage from '@/components/BlogImage';
+import TopicChatbot from '@/components/TopicChatbot';
 
 interface HomeViewClientProps {
   initialPosts: BlogPost[];
@@ -141,6 +142,10 @@ export default function HomeViewClient({ initialPosts, categories }: HomeViewCli
         </section>
       </main>
 
+      <TopicChatbot
+        topicTitle="AI Tools & Hindi Tutorials"
+        topicContent={posts.slice(0, 12).map((p) => `${p.title} (${p.category}): ${p.excerpt}`).join('\n')}
+      />
       <Footer />
     </>
   );

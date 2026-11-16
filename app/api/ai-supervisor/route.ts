@@ -186,7 +186,7 @@ Formatting Rules (STRICT):
       });
     }
 
-    // 2. Action: Question
+    // 2. Action: Question / Topic Chatbot
     if (action === 'question') {
       const userQ = (question || '').trim();
       if (!userQ) {
@@ -196,8 +196,13 @@ Formatting Rules (STRICT):
         );
       }
 
+      const history: { role: 'user' | 'assistant'; text: string }[] = Array.isArray(body.history)
+        ? body.history.slice(-6)
+        : [];
+      const hasHistory = history.length > 0;
+
       const qCacheKey = `v2:${(keywordOrTitle || '').trim().toLowerCase()}_${userQ.toLowerCase()}`;
-      if (!forceRefresh) {
+      if (!forceRefresh && !hasHistory) {
         const cached = questionCache.get(qCacheKey);
         if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
           return NextResponse.json({
@@ -210,14 +215,18 @@ Formatting Rules (STRICT):
       }
 
       const conciseContent = extractConciseContent(content || '', 3500);
+      const historyBlock = hasHistory
+        ? `\nपिछली बातचीत:\n${history
+            .map((h) => `${h.role === 'user' ? 'User' : 'AI Buddy'}: ${String(h.text || '').replace(/<[^>]+>/g, ' ').slice(0, 400)}`)
+            .join('\n')}\n`
+        : '';
 
       const prompt = `User का सवाल: "${userQ}"
-Article Context: ${keywordOrTitle || 'AI Guide'}
-Content:
-${conciseContent}
-
+Article / Topic Context: ${keywordOrTitle || 'AI Guide'}
+${conciseContent ? `Content:\n${conciseContent}` : ''}
+${historyBlock}
 निर्देश:
-- बिल्कुल दोस्त जैसी आसान और conversational Hinglish में सीधा जवाब दो (देवनागरी हिंदी + simple English words जैसे prompt, free, tool, app, try karo)।
+- बिल्कुल दोस्त जैसी आसान और conversational Hinglish में सीधा और छोटा-साफ जवाब दो (देवनागरी हिंदी + simple English words जैसे prompt, free, tool, app, try karo)।
 - किताबी या robotic हिंदी शब्द (जैसे आवश्यकता, प्राप्त करें, उपलब्ध, चयन करें) मत लिखो।
 - सिर्फ clean HTML (<p>, <ul>, <li>, <strong>) दो, कोई inline style या \`\`\`html मत लगाओ।`;
 
@@ -227,7 +236,9 @@ ${conciseContent}
       const result = await generateWithCascade(ai, prompt, systemInstruction, 7000);
       const answerHtml = cleanMarkdownHtml(result.text);
 
-      questionCache.set(qCacheKey, { html: answerHtml, timestamp: Date.now() });
+      if (!hasHistory) {
+        questionCache.set(qCacheKey, { html: answerHtml, timestamp: Date.now() });
+      }
 
       return NextResponse.json({
         answer: answerHtml,

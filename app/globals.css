@@ -76,6 +76,7 @@ tr:hover {
   height: auto !important;
   object-fit: cover;
   border-radius: 0.75rem;
+  margin-bottom: 10px !important;
 }
 
 .prose pre, .editor-content pre {
@@ -278,5 +279,28 @@ article nav[aria-label="Table of Contents"] a:hover {
   animation: none !important;
   min-height: 0;
 }
+
+.ai-chat-content p {
+  margin-top: 0.25rem;
+  margin-bottom: 0.45rem;
+}
+
+.ai-chat-content p:last-child {
+  margin-bottom: 0;
+}
+
+.ai-chat-content ul,
+.ai-chat-content ol {
+  margin-top: 0.35rem !important;
+  margin-bottom: 0.45rem !important;
+  padding-left: 1.25rem !important;
+}
+
+.ai-chat-content li {
+  margin-top: 0.2rem !important;
+  margin-bottom: 0.2rem !important;
+  line-height: 1.55 !important;
+}
+
 
 
