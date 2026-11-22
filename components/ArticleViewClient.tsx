@@ -419,7 +419,10 @@ export default function ArticleViewClient({
                   </div>
                 )}
 
-                {/* Interactive Question Bar */}
+                {/* WordPress HTML Content Renderer */}
+                <ArticleContent content={post.content} />
+
+                {/* Interactive Question Bar (Moved to end of article) */}
                 <div className="p-6 bg-orange-50/80 border border-orange-200 rounded-3xl shadow-sm space-y-4">
                   <div className="flex items-center gap-2.5 text-black font-extrabold text-base">
                     <div className="p-1.5 rounded-xl bg-orange-600 text-white">
@@ -478,9 +481,6 @@ export default function ArticleViewClient({
                     </div>
                   )}
                 </div>
-
-                {/* WordPress HTML Content Renderer */}
-                <ArticleContent content={post.content} />
 
                 {/* Author Box */}
                 <div className="mt-8 pt-8 border-t border-slate-100">
