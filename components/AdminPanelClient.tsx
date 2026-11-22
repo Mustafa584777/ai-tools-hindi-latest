@@ -33,6 +33,7 @@ import {
   saveBlogPostToFirestore,
   deleteBlogPostFromFirestore,
 } from '@/lib/storage';
+import ToolLogo from '@/components/ToolLogo';
 
 type SidebarSection = 'articles' | 'tools';
 
@@ -104,6 +105,7 @@ export default function AdminPanelClient() {
     prosText: string;
     consText: string;
     websiteUrl: string;
+    logoUrl: string;
     logoText: string;
     accentColor: string;
     featured: boolean;
@@ -274,6 +276,7 @@ export default function AdminPanelClient() {
       prosText: '',
       consText: '',
       websiteUrl: 'https://',
+      logoUrl: '',
       logoText: '',
       accentColor: '#ea580c',
       featured: false,
@@ -298,6 +301,7 @@ export default function AdminPanelClient() {
       prosText: (tool.pros || []).join('\n'),
       consText: (tool.cons || []).join('\n'),
       websiteUrl: tool.websiteUrl || '',
+      logoUrl: tool.logoUrl || '',
       logoText: tool.logoText || tool.name.slice(0, 2).toUpperCase(),
       accentColor: tool.accentColor || '#ea580c',
       featured: Boolean(tool.featured),
@@ -336,6 +340,7 @@ export default function AdminPanelClient() {
         pros: splitLines(editingTool.prosText),
         cons: splitLines(editingTool.consText),
         websiteUrl: editingTool.websiteUrl.trim(),
+        logoUrl: editingTool.logoUrl.trim() || undefined,
         logoText: editingTool.logoText.trim() || editingTool.name.slice(0, 2).toUpperCase(),
         accentColor: editingTool.accentColor || '#ea580c',
         featured: editingTool.featured,
@@ -819,12 +824,7 @@ export default function AdminPanelClient() {
                       <tr key={tool.id} className="hover:bg-orange-50/30 transition-colors">
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-3">
-                            <div
-                              className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shrink-0"
-                              style={{ backgroundColor: tool.accentColor || '#ea580c' }}
-                            >
-                              {tool.logoText || tool.name.slice(0, 2).toUpperCase()}
-                            </div>
+                            <ToolLogo tool={tool} size="sm" />
                             <div className="min-w-0">
                               <div className="font-bold text-slate-950 flex items-center gap-2">
                                 <span>{tool.name}</span>
@@ -1189,6 +1189,23 @@ export default function AdminPanelClient() {
                       )
                     }
                     placeholder="https://example.com"
+                    className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-medium"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Logo Image URL (Optional — auto-fetches official favicon if empty)
+                  </label>
+                  <input
+                    type="text"
+                    value={editingTool.logoUrl}
+                    onChange={(e) =>
+                      setEditingTool((prev) =>
+                        prev ? { ...prev, logoUrl: e.target.value } : null
+                      )
+                    }
+                    placeholder="/tool-logos/grok.png or https://..."
                     className="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-medium"
                   />
                 </div>

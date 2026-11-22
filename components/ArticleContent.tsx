@@ -60,9 +60,9 @@ export default function ArticleContent({
 
   const tocItems = useMemo(() => extractTocFromHtml(content), [content]);
 
-  const { firstPart, secondPart } = useMemo(() => {
+  const { firstPart, bodySegments } = useMemo(() => {
     const html = getProcessedContent(content);
-    if (!html) return { firstPart: '', secondPart: '' };
+    if (!html) return { firstPart: '', bodySegments: [] as string[] };
 
     const pCloseRegex = /<\/p>/gi;
     let match;
@@ -77,33 +77,73 @@ export default function ArticleContent({
       }
     }
 
+    let first = html;
+    let rest = '';
+
     if (splitIndex !== -1) {
-      return {
-        firstPart: html.substring(0, splitIndex),
-        secondPart: html.substring(splitIndex),
-      };
+      first = html.substring(0, splitIndex);
+      rest = html.substring(splitIndex);
+    } else {
+      pCloseRegex.lastIndex = 0;
+      let lastPIndex = -1;
+      while ((match = pCloseRegex.exec(html)) !== null) {
+        lastPIndex = pCloseRegex.lastIndex;
+      }
+      if (lastPIndex !== -1) {
+        first = html.substring(0, lastPIndex);
+        rest = html.substring(lastPIndex);
+      }
     }
 
-    // Fallback if fewer than 3 paragraphs
-    pCloseRegex.lastIndex = 0;
-    let lastPIndex = -1;
-    while ((match = pCloseRegex.exec(html)) !== null) {
-      lastPIndex = pCloseRegex.lastIndex;
+    if (!rest) {
+      return { firstPart: first, bodySegments: [] as string[] };
     }
 
-    if (lastPIndex !== -1) {
-      return {
-        firstPart: html.substring(0, lastPIndex),
-        secondPart: html.substring(lastPIndex),
-      };
+    // Find safe </p> split boundaries in the remainder of the article
+    const restPRegex = /<\/p>/gi;
+    const pEnds: number[] = [];
+    while ((match = restPRegex.exec(rest)) !== null) {
+      pEnds.push(restPRegex.lastIndex);
     }
 
-    return { firstPart: html, secondPart: '' };
+    if (pEnds.length < 3) {
+      return { firstPart: first, bodySegments: [rest] };
+    }
+
+    const totalLen = rest.length;
+    const pickClosest = (targetRatio: number, minIdx: number) => {
+      const targetPos = Math.floor(totalLen * targetRatio);
+      let best = -1;
+      let bestDist = Infinity;
+      for (const pos of pEnds) {
+        if (pos <= minIdx + 160 || totalLen - pos < 120) continue;
+        const dist = Math.abs(pos - targetPos);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = pos;
+        }
+      }
+      return best;
+    };
+
+    const split1 = pickClosest(0.38, 0);
+    const split2 = split1 !== -1 ? pickClosest(0.74, split1) : -1;
+
+    const segments: string[] = [];
+    if (split1 !== -1 && split2 !== -1) {
+      segments.push(rest.slice(0, split1), rest.slice(split1, split2), rest.slice(split2));
+    } else if (split1 !== -1) {
+      segments.push(rest.slice(0, split1), rest.slice(split1));
+    } else {
+      segments.push(rest);
+    }
+
+    return { firstPart: first, bodySegments: segments };
   }, [content]);
 
   const processedContentForEffect = useMemo(() => {
-    return firstPart + (secondPart ? '\n' + secondPart : '');
-  }, [firstPart, secondPart]);
+    return firstPart + (bodySegments.length > 0 ? '\n' + bodySegments.join('\n') : '');
+  }, [firstPart, bodySegments]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -294,8 +334,22 @@ export default function ArticleContent({
     >
       <div dangerouslySetInnerHTML={{ __html: firstPart }} />
       <TableOfContents items={tocItems} />
-      {relevantTools.length > 0 && <ArticleToolsBox tools={relevantTools} />}
-      {secondPart && <div dangerouslySetInnerHTML={{ __html: secondPart }} />}
+      {relevantTools[0] && <ArticleToolsBox tool={relevantTools[0]} />}
+
+      {bodySegments.map((segmentHtml, idx) => (
+        <div key={idx}>
+          <div dangerouslySetInnerHTML={{ __html: segmentHtml }} />
+          {idx === 0 && relevantTools[1] && bodySegments.length > 1 && (
+            <ArticleToolsBox tool={relevantTools[1]} />
+          )}
+          {idx === 1 && relevantTools[2] && bodySegments.length > 2 && (
+            <ArticleToolsBox tool={relevantTools[2]} />
+          )}
+          {idx === bodySegments.length - 1 && bodySegments.length === 1 && relevantTools[1] && (
+            <ArticleToolsBox tool={relevantTools[1]} />
+          )}
+        </div>
+      ))}
     </div>
   );
 }

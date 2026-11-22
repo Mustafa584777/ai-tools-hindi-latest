@@ -15,6 +15,7 @@ import {
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TopicChatbot from '@/components/TopicChatbot';
+import ToolLogo from '@/components/ToolLogo';
 import { getAllToolsServer, getToolBySlugServer } from '@/lib/serverTools';
 import { getPublishedPostsServer } from '@/lib/serverPosts';
 
@@ -130,13 +131,7 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
           <div className="h-1.5 w-full bg-gradient-to-r from-orange-600 via-amber-500 to-orange-600" />
           <div className="p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-start gap-4 sm:gap-5 min-w-0">
-              <div
-                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl sm:text-2xl shadow-md shrink-0"
-                style={{ backgroundColor: tool.accentColor || '#ea580c' }}
-                aria-hidden="true"
-              >
-                {tool.logoText || tool.name.slice(0, 2).toUpperCase()}
-              </div>
+              <ToolLogo tool={tool} size="lg" />
 
               <div className="space-y-2 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600">
@@ -336,12 +331,7 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
                     rel="nofollow"
                     className="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-50 hover:bg-orange-50/60 border border-slate-100 hover:border-orange-200 transition-colors"
                   >
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shrink-0"
-                      style={{ backgroundColor: other.accentColor || '#ea580c' }}
-                    >
-                      {other.logoText || other.name.slice(0, 2).toUpperCase()}
-                    </div>
+                    <ToolLogo tool={other} size="sm" />
                     <div className="min-w-0 flex-1">
                       <div className="font-bold text-sm text-slate-900 truncate">
                         {other.name}

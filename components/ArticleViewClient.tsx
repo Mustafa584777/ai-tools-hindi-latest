@@ -346,10 +346,6 @@ export default function ArticleViewClient({
                       {post.date}
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <User className="w-4 h-4 text-orange-600 shrink-0" />
-                      {post.author || 'Anwar'}
-                    </span>
-                    <span className="flex items-center gap-1.5">
                       <Clock className="w-4 h-4 text-orange-600 shrink-0" />
                       {post.readTime}
                     </span>

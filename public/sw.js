@@ -1,5 +1,5 @@
-const CACHE_NAME = 'aitoolhindi-pages-v4';
-const META_CACHE_NAME = 'aitoolhindi-meta-v4';
+const CACHE_NAME = 'aitoolhindi-pages-v5';
+const META_CACHE_NAME = 'aitoolhindi-meta-v5';
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 self.addEventListener('install', (event) => {

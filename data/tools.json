@@ -42,7 +42,8 @@
       "llm"
     ],
     "rating": "4.8",
-    "createdAt": 1740000018000
+    "createdAt": 1740000018000,
+    "logoUrl": "/tool-logos/grok.png"
   },
   {
     "id": "tool-google-gemini",
@@ -88,7 +89,8 @@
       "chatbot"
     ],
     "rating": "4.9",
-    "createdAt": 1740000017000
+    "createdAt": 1740000017000,
+    "logoUrl": "/tool-logos/google-gemini.png"
   },
   {
     "id": "tool-chatgpt",
@@ -134,7 +136,8 @@
       "content"
     ],
     "rating": "4.9",
-    "createdAt": 1740000016000
+    "createdAt": 1740000016000,
+    "logoUrl": "/tool-logos/chatgpt.png"
   },
   {
     "id": "tool-claude",
@@ -179,7 +182,8 @@
       "content"
     ],
     "rating": "4.8",
-    "createdAt": 1740000015000
+    "createdAt": 1740000015000,
+    "logoUrl": "/tool-logos/claude.png"
   },
   {
     "id": "tool-deepseek",
@@ -224,7 +228,8 @@
       "llm"
     ],
     "rating": "4.8",
-    "createdAt": 1740000014000
+    "createdAt": 1740000014000,
+    "logoUrl": "/tool-logos/deepseek.png"
   },
   {
     "id": "tool-midjourney",
@@ -269,7 +274,8 @@
       "thumbnail"
     ],
     "rating": "4.9",
-    "createdAt": 1740000012000
+    "createdAt": 1740000012000,
+    "logoUrl": "/tool-logos/midjourney.png"
   },
   {
     "id": "tool-leonardo-ai",
@@ -315,7 +321,8 @@
       "hd"
     ],
     "rating": "4.8",
-    "createdAt": 1740000011000
+    "createdAt": 1740000011000,
+    "logoUrl": "/tool-logos/leonardo-ai.png"
   },
   {
     "id": "tool-canva-ai",
@@ -360,7 +367,8 @@
       "design"
     ],
     "rating": "4.9",
-    "createdAt": 1740000009000
+    "createdAt": 1740000009000,
+    "logoUrl": "/tool-logos/canva-ai.png"
   },
   {
     "id": "tool-runway",
@@ -404,7 +412,8 @@
       "ai video"
     ],
     "rating": "4.8",
-    "createdAt": 1740000008000
+    "createdAt": 1740000008000,
+    "logoUrl": "/tool-logos/runway.png"
   },
   {
     "id": "tool-kling-ai",
@@ -449,7 +458,8 @@
       "lip-sync"
     ],
     "rating": "4.8",
-    "createdAt": 1740000007000
+    "createdAt": 1740000007000,
+    "logoUrl": "/tool-logos/kling-ai.png"
   },
   {
     "id": "tool-elevenlabs",
@@ -493,7 +503,8 @@
       "dubbing"
     ],
     "rating": "4.9",
-    "createdAt": 1740000005000
+    "createdAt": 1740000005000,
+    "logoUrl": "/tool-logos/elevenlabs.ico"
   },
   {
     "id": "tool-cursor",
@@ -537,7 +548,8 @@
       "ai coding"
     ],
     "rating": "4.9",
-    "createdAt": 1740000003000
+    "createdAt": 1740000003000,
+    "logoUrl": "/tool-logos/cursor.png"
   },
   {
     "id": "tool-perplexity-ai",
@@ -581,7 +593,8 @@
       "fact-check"
     ],
     "rating": "4.8",
-    "createdAt": 1740000013000
+    "createdAt": 1740000013000,
+    "logoUrl": "/tool-logos/perplexity-ai.png"
   },
   {
     "id": "tool-ideogram",
@@ -626,7 +639,8 @@
       "free"
     ],
     "rating": "4.7",
-    "createdAt": 1740000010000
+    "createdAt": 1740000010000,
+    "logoUrl": "/tool-logos/ideogram.png"
   },
   {
     "id": "tool-heygen",
@@ -670,7 +684,8 @@
       "earn"
     ],
     "rating": "4.8",
-    "createdAt": 1740000006000
+    "createdAt": 1740000006000,
+    "logoUrl": "/tool-logos/heygen.png"
   },
   {
     "id": "tool-suno-ai",
@@ -714,7 +729,8 @@
       "gemini music"
     ],
     "rating": "4.8",
-    "createdAt": 1740000004000
+    "createdAt": 1740000004000,
+    "logoUrl": "/tool-logos/suno-ai.png"
   },
   {
     "id": "tool-base44",
@@ -759,7 +775,8 @@
       "earn"
     ],
     "rating": "4.7",
-    "createdAt": 1740000002000
+    "createdAt": 1740000002000,
+    "logoUrl": "/tool-logos/base44.png"
   },
   {
     "id": "tool-gamma-ai",
@@ -803,6 +820,7 @@
       "slides"
     ],
     "rating": "4.8",
-    "createdAt": 1740000001000
+    "createdAt": 1740000001000,
+    "logoUrl": "/tool-logos/gamma-ai.png"
   }
 ]

@@ -15,7 +15,7 @@ service cloud.firestore {
         && data.keys().hasOnly([
           'id', 'slug', 'name', 'tagline', 'category', 'pricing', 'pricingDetails',
           'description', 'features', 'useCases', 'pros', 'cons',
-          'websiteUrl', 'logoText', 'accentColor', 'featured', 'tags',
+          'websiteUrl', 'logoUrl', 'logoText', 'accentColor', 'featured', 'tags',
           'rating', 'createdAt', 'updatedAt'
         ])
         && isValidId(data.id)
@@ -27,6 +27,7 @@ service cloud.firestore {
         && data.websiteUrl is string && data.websiteUrl.size() >= 4 && data.websiteUrl.size() <= 500
         && (!('tagline' in data) || (data.tagline is string && data.tagline.size() <= 240))
         && (!('pricingDetails' in data) || (data.pricingDetails is string && data.pricingDetails.size() <= 160))
+        && (!('logoUrl' in data) || (data.logoUrl is string && data.logoUrl.size() <= 500))
         && (!('logoText' in data) || (data.logoText is string && data.logoText.size() <= 8))
         && (!('accentColor' in data) || (data.accentColor is string && data.accentColor.size() <= 32))
         && (!('rating' in data) || (data.rating is string && data.rating.size() <= 16))

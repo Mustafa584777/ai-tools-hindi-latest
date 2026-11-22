@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
       pros: Array.isArray(incomingTool.pros) ? incomingTool.pros.filter(Boolean) : [],
       cons: Array.isArray(incomingTool.cons) ? incomingTool.cons.filter(Boolean) : [],
       websiteUrl: incomingTool.websiteUrl.trim(),
+      logoUrl: (incomingTool.logoUrl || '').trim() || undefined,
       logoText: (incomingTool.logoText || incomingTool.name.slice(0, 2).toUpperCase()).slice(0, 4),
       accentColor: incomingTool.accentColor || '#ea580c',
       featured: Boolean(incomingTool.featured),

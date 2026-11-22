@@ -35,6 +35,7 @@ export interface AiTool {
   pros?: string[];
   cons?: string[];
   websiteUrl: string;
+  logoUrl?: string;
   logoText?: string;
   accentColor?: string;
   featured?: boolean;

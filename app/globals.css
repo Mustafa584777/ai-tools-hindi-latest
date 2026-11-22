@@ -107,6 +107,29 @@ article nav[aria-label="Table of Contents"] a:hover {
   color: #ea580c !important;
 }
 
+/* Inline AI tool box overrides inside articles */
+article .article-tool-card a.tool-cta-btn,
+article .article-tool-card a.tool-cta-btn:hover,
+.prose .article-tool-card a.tool-cta-btn,
+.prose .article-tool-card a.tool-cta-btn:hover {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+article .article-tool-card a.tool-title-link,
+.prose .article-tool-card a.tool-title-link {
+  color: #020617 !important;
+  text-decoration: none !important;
+}
+article .article-tool-card a.tool-title-link:hover,
+.prose .article-tool-card a.tool-title-link:hover {
+  color: #ea580c !important;
+}
+article .article-tool-card img,
+.prose .article-tool-card img {
+  margin-bottom: 0 !important;
+  border-radius: 0.5rem !important;
+}
+
 /* Robust list styling for all articles and prose content */
 .prose ul, .editor-content ul, article ul {
   list-style-type: disc !important;

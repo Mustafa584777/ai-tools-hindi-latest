@@ -6,6 +6,7 @@ import { Search, Sparkles, ArrowUpRight, ArrowRight, Compass, Star, X } from 'lu
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TopicChatbot from '@/components/TopicChatbot';
+import ToolLogo from '@/components/ToolLogo';
 import { AiTool, ToolPricing } from '@/lib/types';
 
 interface ToolsDirectoryClientProps {
@@ -225,13 +226,7 @@ export default function ToolsDirectoryClient({
                   <div className="space-y-3.5">
                     {/* Card Header */}
                     <div className="flex items-start gap-3.5">
-                      <div
-                        className="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-extrabold text-sm tracking-tight shrink-0 shadow-xs"
-                        style={{ backgroundColor: tool.accentColor || '#ea580c' }}
-                        aria-hidden="true"
-                      >
-                        {tool.logoText || tool.name.slice(0, 2).toUpperCase()}
-                      </div>
+                      <ToolLogo tool={tool} size="md" />
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">

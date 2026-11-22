@@ -34,6 +34,7 @@
         "pricingDetails": { "type": "string", "maxLength": 160 },
         "description": { "type": "string", "maxLength": 2000 },
         "websiteUrl": { "type": "string", "format": "uri", "maxLength": 500 },
+        "logoUrl": { "type": "string", "maxLength": 500 },
         "logoText": { "type": "string", "maxLength": 8 },
         "accentColor": { "type": "string", "maxLength": 32 },
         "featured": { "type": "boolean" },
