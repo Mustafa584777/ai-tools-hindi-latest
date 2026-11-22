@@ -5,6 +5,7 @@ import { cleanPostForExport } from './postClean';
 
 let cachedWpFiles: Set<string> | null = null;
 let cachedPosts: BlogPost[] | null = null;
+let cachedPostsMtimeMs = 0;
 
 function getLocalWpFiles(): Set<string> {
   if (cachedWpFiles) return cachedWpFiles;
@@ -57,7 +58,6 @@ function normalizePostMediaUrls(post: BlogPost, localFiles: Set<string>): BlogPo
   let content = post.content || '';
 
   if (content) {
-    // Normalize both full aitoolhindi.online/wp-content/... and bare /wp-content/... references in HTML (src, srcset, etc.)
     content = content.replace(
       /(?:https?:\/\/(?:www\.)?aitoolhindi\.online)?(\/wp-content\/[^\s"'<>,]+)/gi,
       (_full, wpPath: string) => {
@@ -77,14 +77,20 @@ function normalizePostMediaUrls(post: BlogPost, localFiles: Set<string>): BlogPo
   };
 }
 
-export function getAllPostsServer(): BlogPost[] {
-  if (cachedPosts && process.env.NODE_ENV === 'production') {
-    return cachedPosts;
-  }
+export function invalidatePostsCache() {
+  cachedPosts = null;
+  cachedPostsMtimeMs = 0;
+}
 
+export function getAllPostsServer(): BlogPost[] {
   try {
     const dataFilePath = path.join(process.cwd(), 'data', 'posts.json');
     if (fs.existsSync(dataFilePath)) {
+      const stat = fs.statSync(dataFilePath);
+      if (cachedPosts && cachedPostsMtimeMs === stat.mtimeMs && process.env.NODE_ENV === 'production') {
+        return cachedPosts;
+      }
+
       const content = fs.readFileSync(dataFilePath, 'utf-8');
       const parsed = JSON.parse(content);
       if (Array.isArray(parsed)) {
@@ -93,6 +99,7 @@ export function getAllPostsServer(): BlogPost[] {
           normalizePostMediaUrls(cleanPostForExport(p as BlogPost), localFiles)
         );
         cachedPosts = cleaned;
+        cachedPostsMtimeMs = stat.mtimeMs;
         return cleaned;
       }
     }

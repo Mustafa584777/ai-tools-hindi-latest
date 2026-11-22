@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { ArrowLeft, Clock, Calendar, Share2, Folder, User, Sparkles, Loader2, X, RotateCcw } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { BlogPost } from '@/lib/types';
+import { AiTool, BlogPost } from '@/lib/types';
 import ArticleContent from '@/components/ArticleContent';
 import TableOfContents from '@/components/TableOfContents';
 import { extractTocFromHtml } from '@/lib/utils';
@@ -19,6 +19,7 @@ interface ArticleViewClientProps {
   initialPosts: BlogPost[];
   categories?: string[];
   cleanSlug: string;
+  relevantTools?: AiTool[];
 }
 
 const placeholders = [
@@ -34,6 +35,7 @@ export default function ArticleViewClient({
   initialPosts,
   categories,
   cleanSlug,
+  relevantTools = [],
 }: ArticleViewClientProps) {
   const [posts, setPosts] = useState<BlogPost[]>(initialPosts);
   const [post, setPost] = useState<BlogPost | null>(initialPost);
@@ -420,7 +422,7 @@ export default function ArticleViewClient({
                 )}
 
                 {/* WordPress HTML Content Renderer */}
-                <ArticleContent content={post.content} />
+                <ArticleContent content={post.content} relevantTools={relevantTools} />
 
                 {/* Interactive Question Bar (Moved to end of article) */}
                 <div className="p-6 bg-orange-50/80 border border-orange-200 rounded-3xl shadow-sm space-y-4">

@@ -54,7 +54,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  const activePosts = blogPosts.filter(p => p.status !== 'draft' && (!p.category || !deletedCategories.includes(p.category)));
+  const activePosts = blogPosts.filter(
+    (p) => p.status !== 'draft' && !p.noIndex && (!p.category || !deletedCategories.includes(p.category))
+  );
 
   const categories = Array.from(new Set(activePosts.map(p => p.category).filter(Boolean)))
     .filter(cat => !deletedCategories.includes(cat));

@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, Home, Folder } from 'lucide-react';
+import { Menu, X, Home, Folder, Compass } from 'lucide-react';
 
 const BASE_CATEGORIES = ['AI Guides', 'Image Tutorials', 'Video Tutorials', 'ChatGPT Guides'];
 
@@ -40,9 +40,13 @@ export default function Navbar({ categories: initialCategories }: NavbarProps) {
           <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900">AI Tool Hindi</span>
         </Link>
 
-        {/* Desktop Navigation Links - Only Homepage */}
+        {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-black">
           <Link href="/" className="hover:text-orange-600 transition-colors whitespace-nowrap shrink-0">Home</Link>
+          <Link href="/tools" rel="nofollow" className="inline-flex items-center gap-1.5 hover:text-orange-600 transition-colors whitespace-nowrap shrink-0 font-bold">
+            <Compass className="w-4 h-4 text-orange-600" />
+            <span>AI Tools</span>
+          </Link>
         </nav>
 
         {/* Navigation Toggle Menu */}
@@ -75,6 +79,16 @@ export default function Navbar({ categories: initialCategories }: NavbarProps) {
           >
             <Home className="w-4 h-4 text-orange-600" />
             <span>Home</span>
+          </Link>
+
+          <Link
+            href="/tools"
+            rel="nofollow"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold text-black hover:bg-orange-50 hover:text-orange-600 transition-colors"
+          >
+            <Compass className="w-4 h-4 text-orange-600" />
+            <span>AI Tools Directory</span>
           </Link>
 
           <div className="pt-2 pb-1 px-4 text-[11px] font-extrabold uppercase tracking-wider text-slate-400">

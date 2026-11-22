@@ -11,6 +11,9 @@ export default function robots(): MetadataRoute.Robots {
         '/blog/',
       ],
       disallow: [
+        '/tools',
+        '/tools/',
+        '/admin/',
         '/admin-panel/',
         '/api/',
         '/firebase-applet-config.json',

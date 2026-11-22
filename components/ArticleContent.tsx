@@ -2,7 +2,9 @@
 
 import { useMemo, useRef, useEffect } from 'react';
 import { stripTableOfContents, injectHeadingIdsForToc, extractTocFromHtml, sanitizeExternalLinks } from '@/lib/utils';
+import { AiTool } from '@/lib/types';
 import TableOfContents from '@/components/TableOfContents';
+import ArticleToolsBox from '@/components/ArticleToolsBox';
 
 function getProcessedContent(html: string): string {
   if (!html) return '';
@@ -47,7 +49,13 @@ function getProcessedContent(html: string): string {
   return cleaned;
 }
 
-export default function ArticleContent({ content }: { content: string }) {
+export default function ArticleContent({
+  content,
+  relevantTools = [],
+}: {
+  content: string;
+  relevantTools?: AiTool[];
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const tocItems = useMemo(() => extractTocFromHtml(content), [content]);
@@ -286,6 +294,7 @@ export default function ArticleContent({ content }: { content: string }) {
     >
       <div dangerouslySetInnerHTML={{ __html: firstPart }} />
       <TableOfContents items={tocItems} />
+      {relevantTools.length > 0 && <ArticleToolsBox tools={relevantTools} />}
       {secondPart && <div dangerouslySetInnerHTML={{ __html: secondPart }} />}
     </div>
   );

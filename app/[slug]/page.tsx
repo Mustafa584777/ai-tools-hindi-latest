@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BlogPost } from '@/lib/types';
 import { getPublishedPostsServer } from '@/lib/serverPosts';
+import { getRelevantToolsForPost } from '@/lib/serverTools';
 import { toPostSummary } from '@/lib/postClean';
 import ArticleViewClient from '@/components/ArticleViewClient';
 
@@ -238,6 +239,9 @@ export default async function ArticlePage({ params }: PageProps) {
         .slice(0, 6)
         .map(toPostSummary);
 
+  const relevantTools =
+    post && !post.id.startsWith('static-') ? getRelevantToolsForPost(post, 3) : [];
+
   return (
     <ArticleViewClient
       initialPost={post}
@@ -245,6 +249,7 @@ export default async function ArticlePage({ params }: PageProps) {
       initialPosts={lightInitialPosts}
       categories={categories}
       cleanSlug={cleanSlug}
+      relevantTools={relevantTools}
     />
   );
 }

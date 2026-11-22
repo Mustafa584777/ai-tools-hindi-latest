@@ -19,12 +19,39 @@
         "status": { "type": "string", "enum": ["published", "draft"] }
       },
       "required": ["id", "slug", "title", "content", "status"]
+    },
+    "AiTool": {
+      "title": "AI Tool Directory Entity",
+      "description": "Curated AI tool listed in the aitoolhindi.online /tools directory",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "maxLength": 120 },
+        "tagline": { "type": "string", "maxLength": 240 },
+        "category": { "type": "string", "maxLength": 64 },
+        "pricing": { "type": "string", "enum": ["Free", "Freemium", "Paid", "Open Source"] },
+        "pricingDetails": { "type": "string", "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "websiteUrl": { "type": "string", "format": "uri", "maxLength": 500 },
+        "logoText": { "type": "string", "maxLength": 8 },
+        "accentColor": { "type": "string", "maxLength": 32 },
+        "featured": { "type": "boolean" },
+        "rating": { "type": "string", "maxLength": 16 },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "slug", "name", "category", "pricing", "description", "websiteUrl"]
     }
   },
   "firestore": {
     "/blogPosts/{postId}": {
       "schema": "BlogPost",
       "description": "Collection of all WordPress tutorial blog posts"
+    },
+    "/aiTools/{toolId}": {
+      "schema": "AiTool",
+      "description": "Collection of all AI tools managed in the Admin Panel and displayed in /tools"
     }
   }
 }

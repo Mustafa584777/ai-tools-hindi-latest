@@ -1,5 +1,5 @@
-const CACHE_NAME = 'aitoolhindi-pages-v3';
-const META_CACHE_NAME = 'aitoolhindi-meta-v3';
+const CACHE_NAME = 'aitoolhindi-pages-v4';
+const META_CACHE_NAME = 'aitoolhindi-meta-v4';
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 self.addEventListener('install', (event) => {
@@ -38,7 +38,10 @@ function shouldCacheRequest(request) {
     url.pathname === '/sw.js' ||
     url.pathname.startsWith('/_next/webpack-hmr') ||
     url.pathname.startsWith('/__nextjs') ||
-    url.pathname.startsWith('/api/ai-supervisor')
+    url.pathname.startsWith('/api/ai-supervisor') ||
+    url.pathname.startsWith('/api/tools') ||
+    url.pathname.startsWith('/api/articles') ||
+    url.pathname.startsWith('/admin')
   ) {
     return false;
   }

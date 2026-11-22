@@ -1,15 +1,62 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidTool(data) {
+      return data.keys().hasAll(['id', 'slug', 'name', 'category', 'pricing', 'description', 'websiteUrl'])
+        && data.keys().hasOnly([
+          'id', 'slug', 'name', 'tagline', 'category', 'pricing', 'pricingDetails',
+          'description', 'features', 'useCases', 'pros', 'cons',
+          'websiteUrl', 'logoText', 'accentColor', 'featured', 'tags',
+          'rating', 'createdAt', 'updatedAt'
+        ])
+        && isValidId(data.id)
+        && isValidId(data.slug)
+        && data.name is string && data.name.size() >= 1 && data.name.size() <= 120
+        && data.category is string && data.category.size() >= 1 && data.category.size() <= 64
+        && data.pricing in ['Free', 'Freemium', 'Paid', 'Open Source']
+        && data.description is string && data.description.size() >= 1 && data.description.size() <= 2000
+        && data.websiteUrl is string && data.websiteUrl.size() >= 4 && data.websiteUrl.size() <= 500
+        && (!('tagline' in data) || (data.tagline is string && data.tagline.size() <= 240))
+        && (!('pricingDetails' in data) || (data.pricingDetails is string && data.pricingDetails.size() <= 160))
+        && (!('logoText' in data) || (data.logoText is string && data.logoText.size() <= 8))
+        && (!('accentColor' in data) || (data.accentColor is string && data.accentColor.size() <= 32))
+        && (!('rating' in data) || (data.rating is string && data.rating.size() <= 16))
+        && (!('featured' in data) || data.featured is bool)
+        && (!('features' in data) || (data.features is list && data.features.size() <= 12))
+        && (!('useCases' in data) || (data.useCases is list && data.useCases.size() <= 12))
+        && (!('pros' in data) || (data.pros is list && data.pros.size() <= 10))
+        && (!('cons' in data) || (data.cons is list && data.cons.size() <= 10))
+        && (!('tags' in data) || (data.tags is list && data.tags.size() <= 20));
+    }
+
     // Default deny
     match /{document=**} {
       allow read, write: if false;
     }
 
+    match /test/connection {
+      allow get: if true;
+    }
+
     match /blogPosts/{postId} {
       // Allow public read and write so admin panel works without login gating per user request
       allow read, write: if true;
+    }
+
+    match /aiTools/{toolId} {
+      // Public read for /tools directory and schema-validated writes from admin panel
+      allow read: if true;
+      allow create, update: if isValidId(toolId) && isValidTool(incoming());
+      allow delete: if isValidId(toolId);
     }
 
     match /mediaVideos/{document=**} {
@@ -23,4 +70,3 @@ service cloud.firestore {
     }
   }
 }
-
