@@ -1,12 +1,20 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Poppins, Noto_Sans_Devanagari } from 'next/font/google';
 import CacheRegistrar from '@/components/CacheRegistrar';
 import './globals.css'; // Global styles
 
-const plusJakarta = Plus_Jakarta_Sans({
+const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-poppins',
+  display: 'swap',
+});
+
+const notoHindi = Noto_Sans_Devanagari({
+  subsets: ['devanagari'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-hindi',
   display: 'swap',
 });
 
@@ -52,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body
         suppressHydrationWarning
-        className={`${plusJakarta.className} bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col`}
+        className={`${poppins.variable} ${notoHindi.variable} bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col`}
       >
         <CacheRegistrar />
         {children}

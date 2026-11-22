@@ -27,13 +27,13 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
           <div className="p-1.5 rounded-lg bg-orange-600 text-white shadow-xs">
             <ListOrdered className="w-4 h-4" />
           </div>
-          <span className="font-extrabold text-black text-base sm:text-lg tracking-tight">
+          <span className="font-normal text-black text-[13px] sm:text-[14.5px] tracking-tight">
             Table of Contents
           </span>
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-700 hover:text-orange-900 bg-orange-100/90 hover:bg-orange-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-[10px] font-normal text-orange-700 hover:text-orange-900 bg-orange-100/90 hover:bg-orange-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
           aria-expanded={isOpen}
           aria-label={isOpen ? "Hide Table of Contents" : "Show Table of Contents"}
         >
@@ -44,18 +44,18 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
 
       {isOpen && (
         <nav className="mt-4" aria-label="Table of Contents">
-          <ul className="space-y-2 list-none p-0 m-0">
+          <ul className="space-y-1.5 list-none p-0 m-0">
             {items.map((item) => {
               const isH3 = item.level === 3;
               return (
                 <li
                   key={item.id}
-                  className={`${isH3 ? 'ml-4 sm:ml-6 text-xs sm:text-sm' : 'text-sm sm:text-base font-semibold'}`}
+                  className={`${isH3 ? 'ml-4 sm:ml-6 text-[10px] sm:text-[11px]' : 'text-[11px] sm:text-[13px]'} font-normal`}
                 >
                   <a
                     href={`#${item.id}`}
                     onClick={(e) => scrollToHeading(item.id, e)}
-                    className="text-slate-800 hover:text-orange-600 transition-colors py-0.5 no-underline hover:no-underline font-semibold"
+                    className="text-slate-800 hover:text-orange-600 transition-colors py-0.5 no-underline hover:no-underline font-normal"
                   >
                     {item.text}
                   </a>

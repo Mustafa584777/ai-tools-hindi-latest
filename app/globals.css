@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html,
+body {
+  font-family: var(--font-poppins), var(--font-hindi), system-ui, -apple-system, sans-serif;
+}
+
 /* Theme table styles for WordPress imported tables and editor tables */
 table {
   width: 100%;
@@ -97,10 +102,11 @@ tr:hover {
   color: #c2410c !important; /* orange-700 */
 }
 
-/* Table of Contents link overrides (no underlines) */
+/* Table of Contents link overrides (no underlines, non-bold) */
 article nav[aria-label="Table of Contents"] a,
 article nav[aria-label="Table of Contents"] a:hover {
   text-decoration: none !important;
+  font-weight: 400 !important;
   color: #1e293b !important;
 }
 article nav[aria-label="Table of Contents"] a:hover {
