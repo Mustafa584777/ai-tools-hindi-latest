@@ -149,11 +149,11 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
                   )}
                 </div>
 
-                <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
+                <h1 className="text-2xl sm:text-4xl font-medium text-slate-950 tracking-tight">
                   {tool.name}
                 </h1>
 
-                <p className="text-sm sm:text-base text-slate-700 font-medium leading-relaxed max-w-2xl">
+                <p className="text-sm sm:text-base text-slate-700 font-normal leading-relaxed max-w-2xl">
                   {tool.tagline}
                 </p>
 
@@ -194,11 +194,11 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
           <div className="lg:col-span-8 space-y-6">
             {/* Overview */}
             <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4">
-              <h2 className="text-xl font-extrabold text-slate-950 flex items-center gap-2">
+              <h2 className="text-xl font-medium text-slate-950 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-orange-600" />
                 <span>{tool.name} क्या है और कैसे काम करता है?</span>
               </h2>
-              <p className="text-base text-slate-800 font-medium leading-relaxed">
+              <p className="text-base text-slate-800 font-normal leading-relaxed">
                 {tool.description}
               </p>
             </section>
@@ -206,7 +206,7 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
             {/* Key Features */}
             {tool.features && tool.features.length > 0 && (
               <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4">
-                <h2 className="text-xl font-extrabold text-slate-950 flex items-center gap-2">
+                <h2 className="text-xl font-medium text-slate-950 flex items-center gap-2">
                   <Layers className="w-5 h-5 text-orange-600" />
                   <span>प्रमुख फीचर्स (Key Features)</span>
                 </h2>
@@ -227,7 +227,7 @@ export default async function ToolDetailPage({ params }: ToolPageProps) {
             {/* Use Cases */}
             {tool.useCases && tool.useCases.length > 0 && (
               <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4">
-                <h2 className="text-xl font-extrabold text-slate-950">
+                <h2 className="text-xl font-medium text-slate-950">
                   Best Use Cases (आप कहाँ इस्तेमाल कर सकते हैं?)
                 </h2>
                 <ul className="space-y-3">

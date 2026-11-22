@@ -76,10 +76,10 @@ export default function ToolsDirectoryClient({
                 <Compass className="w-4 h-4 text-orange-600" />
                 <span>AI Tools Directory · आसान Hinglish गाइड</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-slate-950 leading-tight">
                 Best AI Tools Directory for Creators, Students &amp; Builders
               </h1>
-              <p className="text-sm sm:text-base text-slate-700 font-medium leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-700 font-normal leading-relaxed">
                 Chatbots, Photo Generators, Video AI, Coding Assistants और Productivity Tools को एक जगह खोजें — आसान Hinglish रिव्यू, Pricing और सही इस्तेमाल के तरीकों के साथ।
               </p>
             </div>
@@ -202,7 +202,7 @@ export default function ToolsDirectoryClient({
           {filteredTools.length === 0 ? (
             <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center space-y-4">
               <Sparkles className="w-8 h-8 text-orange-600 mx-auto" />
-              <h2 className="text-xl font-extrabold text-slate-900">
+              <h2 className="text-xl font-medium text-slate-900">
                 कोई matching AI tool नहीं मिला
               </h2>
               <p className="text-sm text-slate-600 max-w-md mx-auto">
@@ -273,7 +273,7 @@ export default function ToolsDirectoryClient({
                     </div>
 
                     {/* Description */}
-                    <p className="text-sm text-slate-700 font-medium leading-relaxed line-clamp-2">
+                    <p className="text-sm text-slate-700 font-normal leading-relaxed line-clamp-2">
                       {tool.tagline || tool.description}
                     </p>
                   </div>

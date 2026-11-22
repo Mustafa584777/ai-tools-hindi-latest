@@ -5,6 +5,35 @@ body {
   font-family: var(--font-poppins), var(--font-hindi), system-ui, -apple-system, sans-serif;
 }
 
+@media (max-width: 1023px) {
+  html {
+    font-size: 80%;
+  }
+}
+
+@layer base {
+  h1,
+  h2 {
+    font-weight: 500;
+  }
+
+  p {
+    font-weight: 400;
+  }
+}
+
+.prose h1,
+.prose h2,
+article h1,
+article h2 {
+  font-weight: 500 !important;
+}
+
+.prose p,
+article p {
+  font-weight: 400 !important;
+}
+
 /* Theme table styles for WordPress imported tables and editor tables */
 table {
   width: 100%;

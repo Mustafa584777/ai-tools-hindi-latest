@@ -128,10 +128,10 @@ export default function ArticleViewClient({
               <Folder className="w-3.5 h-3.5 text-orange-600" />
               <span>Category Archive</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-medium text-black tracking-tight">
               {matchedCategory} (Category Archive)
             </h1>
-            <p className="text-black text-sm max-w-2xl font-medium">
+            <p className="text-black text-sm max-w-2xl font-normal">
               Explore all Hindi AI tutorials and guides filed under &ldquo;{matchedCategory}&rdquo;.
             </p>
           </div>
@@ -165,7 +165,7 @@ export default function ArticleViewClient({
                       <h3 className="font-bold text-black text-lg group-hover:text-orange-600 transition-colors line-clamp-2">
                         {p.title}
                       </h3>
-                      <p className="text-black text-sm leading-relaxed line-clamp-2 font-medium">
+                      <p className="text-black text-sm leading-relaxed line-clamp-2 font-normal">
                         {p.metaDescription || p.excerpt}
                       </p>
                     </div>
@@ -194,8 +194,8 @@ export default function ArticleViewClient({
       <>
         <Navbar categories={categories} />
         <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-24 text-center space-y-4">
-          <h1 className="text-2xl font-bold text-black">Page or Category Not Found (404)</h1>
-          <p className="text-black font-medium">This exact URL slug does not exist or was deleted.</p>
+          <h1 className="text-2xl font-medium text-black">Page or Category Not Found (404)</h1>
+          <p className="text-black font-normal">This exact URL slug does not exist or was deleted.</p>
           <Link href="/" className="inline-block px-5 py-2.5 bg-orange-600 text-white rounded-xl text-sm font-bold shadow-sm">
             Back to Home
           </Link>
@@ -332,7 +332,7 @@ export default function ArticleViewClient({
                 <span className="inline-block px-3.5 py-1 bg-orange-50 text-orange-700 font-bold text-xs rounded-full border border-orange-200">
                   {post.category}
                 </span>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight leading-snug sm:leading-tight text-black break-words">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium tracking-tight leading-snug sm:leading-tight text-black break-words">
                   {post.title}
                 </h1>
               </div>
@@ -358,7 +358,7 @@ export default function ArticleViewClient({
                       className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl font-bold transition-all text-xs disabled:opacity-50 shadow-sm shadow-orange-500/20 cursor-pointer"
                     >
                       {isSummarizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-amber-100" />}
-                      <span>{isSummarizing ? 'Summarising...' : 'Summarise with AI'}</span>
+                      <span>{isSummarizing ? 'Summarising...' : 'Summarise'}</span>
                     </button>
 
                     <button
@@ -384,7 +384,7 @@ export default function ArticleViewClient({
                           <h3 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight truncate">
                             AI Summary
                           </h3>
-                          <p className="text-xs text-slate-600 font-medium">
+                          <p className="text-xs text-slate-600 font-normal">
                             Quick key points, tools table &amp; easy steps in simple Hinglish
                           </p>
                         </div>
@@ -502,7 +502,7 @@ export default function ArticleViewClient({
                           AI Tools Analyst
                         </span>
                       </div>
-                      <p className="text-black text-sm font-medium leading-relaxed">
+                      <p className="text-black text-sm font-normal leading-relaxed">
                         Anwar is the founder and lead editor at aitoolhindi.online. Dedicated to making artificial intelligence, prompt engineering, and cutting-edge tech simple and practical in Hindi for millions across India. He has analysed over 1000+ AI tools till date.
                       </p>
                     </div>

@@ -38,7 +38,7 @@ export default function ArticleToolsBox({ tool }: ArticleToolsBoxProps) {
             </span>
             <span className="text-xs font-bold text-orange-700">{tool.pricing}</span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-700 font-medium leading-snug line-clamp-2 !mb-0">
+          <p className="text-xs sm:text-sm text-slate-700 font-normal leading-snug line-clamp-2 !mb-0">
             {tool.tagline || tool.description}
           </p>
         </div>

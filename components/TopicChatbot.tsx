@@ -120,7 +120,7 @@ export default function TopicChatbot({ topicTitle, topicContent = '' }: TopicCha
       {isOpen && (
         <div
           role="dialog"
-          aria-label="Talk to AI"
+          aria-label="Ponin"
           className="w-[calc(100vw-2rem)] sm:w-[390px] max-h-[75vh] bg-white rounded-3xl border border-orange-200 shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
@@ -131,7 +131,7 @@ export default function TopicChatbot({ topicTitle, topicContent = '' }: TopicCha
               </div>
               <div className="min-w-0">
                 <div className="font-extrabold text-sm leading-tight truncate">
-                  Talk to AI
+                  Ponin
                 </div>
                 <div className="text-[11px] text-white/90 truncate mt-0.5 font-medium">
                   {topicTitle}
@@ -244,9 +244,9 @@ export default function TopicChatbot({ topicTitle, topicContent = '' }: TopicCha
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        title="Talk to AI"
+        title="Ponin"
         aria-expanded={isOpen}
-        aria-label="Talk to AI"
+        aria-label="Ponin"
         className="inline-flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 hover:from-orange-700 hover:to-amber-700 text-white font-extrabold text-xs sm:text-sm shadow-xl shadow-orange-600/30 border border-orange-400/40 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
       >
         {isOpen ? (
@@ -254,7 +254,7 @@ export default function TopicChatbot({ topicTitle, topicContent = '' }: TopicCha
         ) : (
           <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
         )}
-        <span>Talk to AI</span>
+        <span>Ponin</span>
       </button>
     </div>
   );
