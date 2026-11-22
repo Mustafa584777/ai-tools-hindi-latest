@@ -201,7 +201,7 @@ export default function ArticleContent({
       }
     });
 
-    const allImages = container.querySelectorAll('img');
+    const allImages = container.querySelectorAll<HTMLImageElement>('img:not([data-tool-logo="true"])');
     allImages.forEach((imgEl, idx) => {
       imgEl.setAttribute('referrerpolicy', 'no-referrer');
       if (idx === 0) {

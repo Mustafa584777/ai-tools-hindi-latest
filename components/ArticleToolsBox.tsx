@@ -17,7 +17,7 @@ export default function ArticleToolsBox({ tool }: ArticleToolsBoxProps) {
       aria-label={`${tool.name} AI Tool`}
       className="not-prose article-tool-card my-7 bg-gradient-to-r from-orange-50/75 via-white to-amber-50/45 border border-orange-200 hover:border-orange-300 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors"
     >
-      <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+      <div className="flex items-center gap-3.5 min-w-0">
         <ToolLogo tool={tool} size="md" />
 
         <div className="min-w-0 space-y-1">

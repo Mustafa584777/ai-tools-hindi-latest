@@ -126,8 +126,15 @@ article .article-tool-card a.tool-title-link:hover,
 }
 article .article-tool-card img,
 .prose .article-tool-card img {
-  margin-bottom: 0 !important;
-  border-radius: 0.5rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  object-fit: contain !important;
+  border-radius: 0.375rem !important;
 }
 
 /* Robust list styling for all articles and prose content */

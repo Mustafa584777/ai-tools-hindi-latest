@@ -53,10 +53,11 @@ export default function ToolLogo({ tool, size = 'md' }: ToolLogoProps) {
       <img
         src={imgSrc}
         alt={`${tool.name} logo`}
+        data-tool-logo="true"
         loading="lazy"
         decoding="async"
         referrerPolicy="no-referrer"
-        className="w-full h-full object-contain !mb-0 !rounded-lg"
+        className="w-full h-full max-w-full max-h-full object-contain block m-0 p-0"
         onError={() => {
           const fallbackFavicon = getFaviconUrl(tool.websiteUrl);
           if (fallbackFavicon && imgSrc !== fallbackFavicon) {
